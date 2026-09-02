@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FinancialPlan } from '../../types/finance';
 import { useFinance } from '../../context/FinanceContext';
 import { AllocationDonut } from '../charts/AllocationDonut';
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { formatINR } from '../../lib/formatters';
 import { RobotAdvisorColoredIcon } from '../common/ColoredIcon';
-import { X, Check, Info } from 'lucide-react';
+import { X, Check, Info, Activity } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { fetchMonteCarloSimulation, MonteCarloSimulationData } from '../../lib/monteCarloService';
 
 interface PlanDetailModalProps {
   plan: FinancialPlan | null;
@@ -15,6 +16,18 @@ interface PlanDetailModalProps {
 
 export const PlanDetailModal: React.FC<PlanDetailModalProps> = ({ plan, onClose }) => {
   const { user, selectPlan, selectedGoal, setIsFeedbackOpen } = useFinance();
+  const [mcData, setMcData] = useState<MonteCarloSimulationData | null>(null);
+  const [mcLoading, setMcLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!plan) return;
+    const horizon = Math.max(1, (selectedGoal?.targetYear || 2031) - 2026);
+    setMcLoading(true);
+    fetchMonteCarloSimulation(horizon, plan.expectedCagr)
+      .then((data) => setMcData(data))
+      .catch((err) => console.warn('Failed to load MC simulation:', err))
+      .finally(() => setMcLoading(false));
+  }, [plan, selectedGoal]);
 
   if (!plan) return null;
 
@@ -96,6 +109,50 @@ export const PlanDetailModal: React.FC<PlanDetailModalProps> = ({ plan, onClose 
               <span className="text-[10px] text-text-tertiary">Weighted annual growth estimate</span>
             </div>
           </div>
+        </div>
+
+        {/* Monte Carlo 10,000 Nifty50 Simulation Card */}
+        <div className="p-4 rounded-2xl glass-card border border-border/80 bg-surface/30 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-primary">
+              <Activity className="w-4 h-4 text-brand-mint" />
+              <span>Monte Carlo Goal Simulation (10,000 Nifty50 Runs)</span>
+            </div>
+            <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-brand-green/10 text-brand-lightGreen border border-brand-green/20">
+              {mcLoading ? 'Simulating...' : `${mcData?.source === 'hf_space' || mcData?.source === 'cached' ? 'HF Space API' : 'Empirical Model'}`}
+            </span>
+          </div>
+
+          {mcData ? (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center">
+              <div className="p-2.5 rounded-xl bg-surface/40 border border-border/40">
+                <span className="text-[10px] text-text-tertiary block">Success Probability</span>
+                <span className="text-lg font-mono font-bold text-brand-lightGreen block mt-0.5">
+                  {mcData.goal_success_probability}%
+                </span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-surface/40 border border-border/40">
+                <span className="text-[10px] text-text-tertiary block">Median CAGR (P50)</span>
+                <span className="text-lg font-mono font-bold text-text-primary block mt-0.5">
+                  {mcData.median_cagr_pct}%
+                </span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-surface/40 border border-border/40">
+                <span className="text-[10px] text-text-tertiary block">Downside (P10)</span>
+                <span className="text-lg font-mono font-bold text-amber-400 block mt-0.5">
+                  {mcData.percentiles.p10}%
+                </span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-surface/40 border border-border/40">
+                <span className="text-[10px] text-text-tertiary block">Bull Market (P90)</span>
+                <span className="text-lg font-mono font-bold text-brand-mint block mt-0.5">
+                  {mcData.percentiles.p90}%
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="text-xs text-text-tertiary text-center py-2">Loading Monte Carlo empirical distributions...</div>
+          )}
         </div>
 
         {/* Footer Actions */}

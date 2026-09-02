@@ -6,6 +6,7 @@ import {
   UserProfile,
 } from '../types/finance';
 import { formatINR } from './formatters';
+import { fetchMonteCarloSimulation } from './monteCarloService';
 
 export interface AIChatMessage {
   id: string;
@@ -85,38 +86,116 @@ export async function sendAIMessage(
   assumptions: Assumptions,
   primaryGoal: GoalItem | null,
   apiKey?: string,
-  apiProvider: 'gemini' | 'openai' = 'gemini'
+  apiProvider: 'openrouter' | 'gemini' | 'openai' = 'openrouter'
 ): Promise<string> {
   const query = userQuery.trim().toLowerCase();
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+  const openrouterKey = apiKey || import.meta.env.VITE_OPENROUTER_API_KEY;
+  const llmModel = import.meta.env.VITE_LLM_MODEL || 'google/gemini-2.5-flash';
+  const systemPrompt = buildFinancialContextPrompt(user, financials, activePlan, assumptions, primaryGoal);
 
-  // Check if live API Key is provided
-  if (apiKey && apiKey.trim().length > 10) {
+  // 1. Try backend FastAPI endpoint first (carries guardrails & audit trail)
+  try {
+    const backendEndpoint = `${backendUrl.replace(/\/$/, '')}/ai/chat`;
+    const formattedHistory = chatHistory.slice(-8).map((m) => ({
+      role: m.sender === 'user' ? 'user' : 'assistant',
+      content: m.text,
+    }));
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+    const backendRes = await fetch(backendEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: formattedHistory,
+        financial_context: systemPrompt,
+        user_query: userQuery,
+      }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (backendRes.ok) {
+      const data = await backendRes.json();
+      if (data?.reply) {
+        return data.reply;
+      }
+    }
+  } catch (backendErr) {
+    console.warn('[AI Service] Backend chat proxy unavailable, checking direct OpenRouter/Gemini connection:', backendErr);
+  }
+
+  // 2. Direct OpenRouter LLM Call (OpenAI-compatible)
+  if (openrouterKey && openrouterKey.trim().length > 10) {
     try {
-      if (apiProvider === 'gemini') {
-        const systemPrompt = buildFinancialContextPrompt(user, financials, activePlan, assumptions, primaryGoal);
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
-        
-        const contents = [
-          {
-            role: 'user',
-            parts: [{ text: `${systemPrompt}\n\nUser Question: ${userQuery}` }],
-          }
-        ];
+      const historyTurns = chatHistory.slice(-8).map((m) => ({
+        role: m.sender === 'user' ? 'user' : 'assistant',
+        content: m.text,
+      }));
 
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents }),
-        });
+      const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-        if (response.ok) {
-          const data = await response.json();
-          const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (reply) return reply;
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${openrouterKey.trim()}`,
+          'HTTP-Referer': 'https://octovova.finance',
+          'X-Title': 'Octovova Finance Planning Engine',
+        },
+        body: JSON.stringify({
+          model: llmModel,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...historyTurns,
+            { role: 'user', content: userQuery },
+          ],
+          max_tokens: 650,
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        const data = await response.json();
+        const reply = data?.choices?.[0]?.message?.content;
+        if (reply && reply.trim()) {
+          return reply.trim();
         }
       }
     } catch (err) {
-      console.warn('Live API call failed, falling back to local financial knowledge engine', err);
+      console.warn('[AI Service] Direct OpenRouter call failed, falling back to local financial engine:', err);
+    }
+  }
+
+  // 3. Fallback to Google Gemini direct API if user provided Gemini Studio Key
+  if (apiKey && apiKey.trim().length > 10 && apiProvider === 'gemini') {
+    try {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
+      const contents = [
+        {
+          role: 'user',
+          parts: [{ text: `${systemPrompt}\n\nUser Question: ${userQuery}` }],
+        },
+      ];
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (reply) return reply;
+      }
+    } catch (err) {
+      console.warn('[AI Service] Live Gemini API call failed:', err);
     }
   }
 
@@ -212,6 +291,27 @@ You have sufficient liquidity to absorb unforeseen medical or career disruptions
 3. **High Risk Plan (80% Equity / 17% Debt)**:
    • Lowers the required monthly contribution through aggressive equity compounding (~10.2% CAGR).
    • Expect short-term portfolio drawdowns of 15–20% during market corrections.`;
+  }
+
+  // Topic 7: Monte Carlo Simulation & Goal Probability
+  if (query.includes('monte') || query.includes('carlo') || query.includes('probability') || query.includes('odds') || query.includes('chance') || query.includes('simulation')) {
+    const horizonYears = Math.max(1, (primaryGoal?.targetYear || 2031) - 2026);
+    const planCagr = activePlan?.expectedCagr || 9.1;
+    const mc = await fetchMonteCarloSimulation(horizonYears, planCagr);
+
+    return `🎲 **Empirical Nifty50 Monte Carlo Analysis (${mc.n_simulations.toLocaleString()} Runs)**:
+    
+Over your **${mc.horizonYears}-year investment horizon** targeting **${goalName}**:
+
+• **Goal Success Probability**: **${mc.goal_success_probability}%** (chance of meeting or exceeding your target CAGR of ${cagr}).
+• **Median Portfolio Outcome (P50)**: **${mc.median_cagr_pct}% p.a.**
+• **Conservative Market Scenario (P10)**: **${mc.percentiles.p10}% p.a.**
+• **Optimistic Bull Market (P90)**: **${mc.percentiles.p90}% p.a.**
+• **Risk of Negative CAGR**: **${mc.prob_negative_cagr_pct}%** over ${mc.horizonYears} years.
+
+*Source: ${mc.source === 'hf_space' || mc.source === 'cached' ? 'Live Hugging Face Nifty50 Engine' : 'Historical Empirical Fallback Model'}*
+
+Your ${equityPct}% equity allocation has a high statistical likelihood of delivering positive real compounding over this timeline.`;
   }
 
   // General Financial Advisory Response

@@ -112,13 +112,13 @@ export const StepGoals: React.FC<StepGoalsProps> = ({ onNext, onPrev }) => {
                   : 'glass-card border-border hover:border-brand-green/40 hover:bg-surface-hover'
               }`}
             >
-              <div className="flex items-center gap-2.5 min-w-0">
+              <div className="flex items-center gap-2 min-w-0">
                 <div className="p-1.5 rounded-full bg-surface shrink-0">
                   {gt.icon}
                 </div>
-                <div className="min-w-0 truncate">
-                  <span className="text-xs font-bold text-text-primary block truncate">{gt.label}</span>
-                </div>
+                <span className="text-xs font-bold text-text-primary leading-tight break-words">
+                  {gt.label}
+                </span>
               </div>
               <Plus className="w-3.5 h-3.5 text-brand-lightGreen shrink-0 group-hover:scale-125 transition-transform" />
             </button>

@@ -79,7 +79,7 @@ export const GoalSummaryList: React.FC = () => {
   return (
     <div className="space-y-4">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 rounded-2xl bg-[#0D1612] border border-white/8 shadow-card">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 rounded-2xl dash-card-dark">
         <div>
           <div className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-brand-green/10 text-brand-lightGreen">
@@ -149,7 +149,7 @@ export const GoalSummaryList: React.FC = () => {
                 className={`group relative p-5 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-4 ${
                   isSelected
                     ? 'bg-[#101C17] border-brand-green/60 shadow-glow-green ring-1 ring-brand-green/30'
-                    : 'bg-[#0D1612] border-white/8 hover:border-white/20 hover:bg-[#101915]'
+                    : 'dash-card-dark hover:border-brand-green/30'
                 }`}
               >
                 {/* Top Row: Icon, Name, Target Year, Priority */}

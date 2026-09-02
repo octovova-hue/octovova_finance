@@ -58,6 +58,25 @@
     border-radius: 20px;
   }
 
+  /* Refined dark card: green-to-black gradient depth instead of a flat fill +
+     harsh white outline. Edge is defined by a barely-there green-tinted line
+     and soft ambient glow, not a bright border. */
+  .dash-card-dark {
+    background:
+      linear-gradient(165deg, rgba(16, 185, 129, 0.09) 0%, rgba(9, 15, 12, 0.97) 40%, rgba(4, 7, 6, 0.99) 100%),
+      #090E0C;
+    border: 1px solid rgba(16, 185, 129, 0.14);
+    box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.65), 0 0 44px -22px rgba(16, 185, 129, 0.28), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+  }
+
+  /* Soft off-white / mint hero card — reserved for the single most
+     important number on a screen (Total Net Worth). */
+  .dash-card-light {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F2FBF6 45%, #E1F4EA 100%);
+    border: 1px solid rgba(16, 185, 129, 0.20);
+    box-shadow: 0 20px 48px -14px rgba(16, 185, 129, 0.28), 0 6px 18px -6px rgba(0, 0, 0, 0.25);
+  }
+
   .glass-card {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);

@@ -104,7 +104,7 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#080E0C]/90 backdrop-blur-xl border-b border-white/8 transition-all">
+    <header className="sticky top-0 z-40 w-full bg-[#080E0C]/90 backdrop-blur-xl border-b border-brand-green/10 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         {/* Brand Logo */}
         <div

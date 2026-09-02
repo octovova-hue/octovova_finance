@@ -49,23 +49,23 @@ export const DashboardHero: React.FC = () => {
 
       {/* Hero Metrics Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Main Net Worth & Cash Flow Card (Cohesive Dark Fintech Card) */}
-        <div className="lg:col-span-2 rounded-2xl bg-[#0D1612] border border-white/8 p-6 sm:p-7 flex flex-col justify-between shadow-card relative overflow-hidden">
+        {/* Main Net Worth & Cash Flow Card — soft off-white/mint hero treatment */}
+        <div className="lg:col-span-2 dash-card-light rounded-2xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden">
           {/* Subtle Ambient Sheen */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-brand-green/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-80 h-80 bg-brand-green/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="space-y-4 relative z-10">
             {/* Top Row: Label & User Risk Badge */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-brand-green/10 text-brand-lightGreen">
+                <div className="p-1.5 rounded-lg bg-brand-green/10 text-brand-darkGreen">
                   <Wallet className="w-4 h-4" />
                 </div>
-                <span className="text-xs uppercase font-bold tracking-wider text-text-secondary">
+                <span className="text-xs uppercase font-bold tracking-wider text-[#3F5B4E]">
                   Total Financial Net Worth
                 </span>
               </div>
-              <span className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-brand-green/15 text-brand-lightGreen border border-brand-green/30">
+              <span className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-brand-green/15 text-brand-darkGreen border border-brand-green/30">
                 {user.riskProfile.category} Profile
               </span>
             </div>
@@ -76,39 +76,39 @@ export const DashboardHero: React.FC = () => {
                 value={financials.netWorth}
                 currency="INR"
                 className={`text-3xl sm:text-4xl lg:text-5xl font-mono font-extrabold tracking-tight ${
-                  financials.isNetWorthNegative ? 'text-danger' : 'text-text-primary'
+                  financials.isNetWorthNegative ? 'text-danger' : 'text-[#0B2A1D]'
                 }`}
               />
-              <span className="text-xs text-text-tertiary font-mono">
+              <span className="text-xs text-[#6E8579] font-mono">
                 Across {user.assets.length} asset classes & {user.liabilities.length} debt items
               </span>
             </div>
 
             {/* Assets & Debts Breakdown Chips */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-              <div className="p-3 rounded-xl bg-white/[0.02] border border-white/6">
-                <span className="text-[10px] uppercase font-bold text-text-tertiary flex items-center gap-1">
-                  <ArrowUpRight className="w-3 h-3 text-brand-lightGreen" /> Total Assets
+              <div className="p-3 rounded-xl bg-black/[0.025] border border-black/[0.06]">
+                <span className="text-[10px] uppercase font-bold text-[#6E8579] flex items-center gap-1">
+                  <ArrowUpRight className="w-3 h-3 text-brand-darkGreen" /> Total Assets
                 </span>
-                <span className="font-mono font-bold text-text-primary text-sm sm:text-base mt-0.5 block">
+                <span className="font-mono font-bold text-[#0B2A1D] text-sm sm:text-base mt-0.5 block">
                   {formatINR(financials.totalAssets)}
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-white/[0.02] border border-white/6">
-                <span className="text-[10px] uppercase font-bold text-text-tertiary flex items-center gap-1">
+              <div className="p-3 rounded-xl bg-black/[0.025] border border-black/[0.06]">
+                <span className="text-[10px] uppercase font-bold text-[#6E8579] flex items-center gap-1">
                   <ArrowDownRight className="w-3 h-3 text-danger" /> Total Liabilities
                 </span>
-                <span className="font-mono font-bold text-danger text-sm sm:text-base mt-0.5 block">
+                <span className="font-mono font-bold text-red-600 text-sm sm:text-base mt-0.5 block">
                   {formatINR(financials.totalLiabilities)}
                 </span>
               </div>
 
-              <div className="col-span-2 sm:col-span-1 p-3 rounded-xl bg-white/[0.02] border border-white/6">
-                <span className="text-[10px] uppercase font-bold text-text-tertiary flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3 text-brand-mint" /> Liquid Cushion
+              <div className="col-span-2 sm:col-span-1 p-3 rounded-xl bg-black/[0.025] border border-black/[0.06]">
+                <span className="text-[10px] uppercase font-bold text-[#6E8579] flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3 text-brand-darkGreen" /> Liquid Cushion
                 </span>
-                <span className="font-mono font-bold text-brand-mint text-sm sm:text-base mt-0.5 block">
+                <span className="font-mono font-bold text-brand-darkGreen text-sm sm:text-base mt-0.5 block">
                   {formatINR(financials.liquidAssetsAvailable)}
                 </span>
               </div>
@@ -116,12 +116,12 @@ export const DashboardHero: React.FC = () => {
           </div>
 
           {/* Monthly Cash Flow Trajectory Strip */}
-          <div className="mt-5 pt-4 border-t border-white/6 relative z-10">
+          <div className="mt-5 pt-4 border-t border-black/[0.08] relative z-10">
             <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="text-text-secondary font-medium">Monthly Cash Flow Trajectory</span>
+              <span className="text-[#3F5B4E] font-medium">Monthly Cash Flow Trajectory</span>
               <span
                 className={`font-mono font-bold ${
-                  financials.isCashFlowNegative ? 'text-danger' : 'text-brand-lightGreen'
+                  financials.isCashFlowNegative ? 'text-danger' : 'text-brand-darkGreen'
                 }`}
               >
                 {financials.monthlyCashFlow >= 0 ? '+' : ''}
@@ -132,8 +132,8 @@ export const DashboardHero: React.FC = () => {
           </div>
         </div>
 
-        {/* Connected Risk Profile Card */}
-        <div className="rounded-2xl bg-[#0D1612] border border-white/8 p-6 flex flex-col justify-between items-center text-center shadow-card relative group">
+        {/* Connected Risk Profile Card — dark green-to-black gradient */}
+        <div className="dash-card-dark rounded-2xl p-6 flex flex-col justify-between items-center text-center relative group">
           <div className="w-full flex items-center justify-between">
             <span className="text-xs uppercase font-bold text-text-secondary tracking-wider">
               Risk Profile & Health
@@ -179,7 +179,7 @@ export const DashboardHero: React.FC = () => {
             onClick={() => setShowFullRiskModal(false)}
           />
 
-          <div className="w-full max-w-lg bg-[#0C1410] rounded-2xl border border-white/10 p-6 sm:p-8 shadow-modal space-y-5 text-center relative z-10 animate-modal-enter">
+          <div className="w-full max-w-lg dash-card-dark rounded-2xl p-6 sm:p-8 space-y-5 text-center relative z-10 animate-modal-enter">
             <button
               type="button"
               onClick={() => setShowFullRiskModal(false)}

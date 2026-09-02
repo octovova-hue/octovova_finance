@@ -111,7 +111,6 @@ export const StepIncome: React.FC<StepIncomeProps> = ({ onNext, onPrev }) => {
                 <input
                   type="number"
                   min="0"
-                  step="1000"
                   value={item.monthlyAmount === 0 ? '' : item.monthlyAmount}
                   onChange={(e) => handleUpdate(item.id, 'monthlyAmount', parseFloat(e.target.value) || 0)}
                   placeholder="0"

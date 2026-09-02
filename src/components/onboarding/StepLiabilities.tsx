@@ -123,7 +123,6 @@ export const StepLiabilities: React.FC<StepLiabilitiesProps> = ({ onNext, onPrev
                 <input
                   type="number"
                   min="0"
-                  step="5000"
                   value={item.outstandingAmount === 0 ? '' : item.outstandingAmount}
                   onChange={(e) => handleUpdate(item.id, 'outstandingAmount', parseFloat(e.target.value) || 0)}
                   placeholder="0"

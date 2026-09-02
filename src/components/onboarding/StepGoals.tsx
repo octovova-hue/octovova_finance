@@ -185,7 +185,6 @@ export const StepGoals: React.FC<StepGoalsProps> = ({ onNext, onPrev }) => {
                     <span className="absolute left-4 font-mono text-text-tertiary text-xs">₹</span>
                     <input
                       type="number"
-                      step="50000"
                       min="0"
                       value={goal.todayCost === 0 ? '' : goal.todayCost}
                       onChange={(e) => handleUpdate(goal.id, 'todayCost', parseFloat(e.target.value) || 0)}

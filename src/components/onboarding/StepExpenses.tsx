@@ -228,7 +228,6 @@ export const StepExpenses: React.FC<StepExpensesProps> = ({ onNext, onPrev }) =>
                     <input
                       type="number"
                       min="0"
-                      step="500"
                       value={currentAmount === 0 ? '' : currentAmount}
                       onChange={(e) => handleItemizedAmountChange(cat, parseFloat(e.target.value) || 0)}
                       placeholder="0"

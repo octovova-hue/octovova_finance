@@ -289,7 +289,6 @@ export const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose }) =
                     type="number"
                     required
                     min="10000"
-                    step="50000"
                     value={costToday || ''}
                     onChange={(e) => setCostToday(parseFloat(e.target.value) || 0)}
                     placeholder="0"

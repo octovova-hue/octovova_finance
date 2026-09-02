@@ -126,7 +126,6 @@ export const StepAssets: React.FC<StepAssetsProps> = ({ onNext, onPrev }) => {
                 <input
                   type="number"
                   min="0"
-                  step="10000"
                   value={item.currentValue === 0 ? '' : item.currentValue}
                   onChange={(e) => handleUpdate(item.id, 'currentValue', parseFloat(e.target.value) || 0)}
                   placeholder="0"

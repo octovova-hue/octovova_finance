@@ -337,7 +337,6 @@ export const Header: React.FC = () => {
                         <input
                           type="number"
                           min="0"
-                          step="5000"
                           value={editSalary}
                           onChange={(e) => setEditSalary(parseFloat(e.target.value) || 0)}
                           className="w-full bg-surface border border-border focus:border-brand-green rounded-full pl-6 pr-2 py-1.5 text-xs font-mono font-bold text-text-primary outline-none"

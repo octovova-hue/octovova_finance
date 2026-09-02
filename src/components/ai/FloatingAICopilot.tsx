@@ -108,17 +108,17 @@ export const FloatingAICopilot: React.FC = () => {
             setIsOpen(true);
             setHasInteracted(true);
           }}
-          className={`pointer-events-auto group flex items-center gap-3 h-16 px-6 rounded-full dash-card-dark hover:border-brand-green/60 text-text-primary font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 ${
+          className={`pointer-events-auto group flex items-center gap-3.5 h-[72px] pl-4 pr-7 rounded-full bg-gradient-to-r from-brand-lightGreen to-brand-darkGreen text-white font-extrabold text-base shadow-glow-green transition-all duration-200 hover:scale-105 active:scale-95 ${
             !hasInteracted ? 'animate-ai-jump' : ''
           }`}
           aria-label="Open AI Advisor Copilot"
         >
-          <div className="w-10 h-10 rounded-full bg-brand-green/20 text-brand-lightGreen flex items-center justify-center shrink-0">
-            <Sparkles className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-full bg-white/20 text-white flex items-center justify-center shrink-0">
+            <Sparkles className="w-6 h-6" />
           </div>
           <span className="hidden sm:inline">AI Advisor Copilot</span>
           <span className="sm:hidden">Advisor</span>
-          <span className="w-2.5 h-2.5 rounded-full bg-brand-green animate-pulse" />
+          <span className="w-3 h-3 rounded-full bg-white animate-pulse" />
         </button>
       ) : (
         /* Expanded Floating Chat Panel / Responsive Sheet on Mobile */

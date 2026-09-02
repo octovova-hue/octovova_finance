@@ -21,6 +21,11 @@ export const PlanCard: React.FC<PlanCardProps> = ({
   const { user, selectPlan, setIsFeedbackOpen } = useFinance();
   const isSelected = user.activePlanId === plan.planId || (!user.activePlanId && plan.type === 'balanced');
 
+  // The selected (or, failing that, the recommended) plan gets the
+  // off-white/mint "hero" treatment to stand out; everything else is
+  // a neutral grey/black gradient so green stays reserved for accents.
+  const isHighlighted = isSelected || isRecommended;
+
   const handleSelect = (e: React.MouseEvent) => {
     e.stopPropagation();
     selectPlan(plan.planId);
@@ -54,15 +59,23 @@ export const PlanCard: React.FC<PlanCardProps> = ({
     growth: 'Stronger long-term growth for higher risk tolerance.',
   }[plan.type];
 
+  // Text-color set flips for legibility depending on card background
+  const textPrimary = isHighlighted ? 'text-[#0B2A1D]' : 'text-text-primary';
+  const textSecondary = isHighlighted ? 'text-[#3F5B4E]' : 'text-text-secondary';
+  const textTertiary = isHighlighted ? 'text-[#6E8579]' : 'text-text-tertiary';
+  const textAccent = isHighlighted ? 'text-brand-darkGreen' : 'text-brand-lightGreen';
+  const chipBg = isHighlighted ? 'bg-black/[0.03] border-black/[0.08]' : 'bg-white/[0.03] border-white/8';
+  const dividerBorder = isHighlighted ? 'border-black/[0.08]' : 'border-white/6';
+
   return (
     <div
       onClick={() => onOpenDetails?.(plan)}
       className={`group relative rounded-2xl p-5 sm:p-6 transition-all duration-200 cursor-pointer flex flex-col justify-between border ${
         isSelected
-          ? 'bg-[#101F18] border-brand-green/70 shadow-glow-green ring-1 ring-brand-green/30 sm:scale-[1.02]'
+          ? 'dash-card-light ring-1 ring-brand-green/40 sm:scale-[1.02]'
           : isRecommended
-          ? 'bg-[#0E1A14] border-brand-green/40 hover:border-brand-green/60 hover:bg-[#111F19]'
-          : 'dash-card-dark hover:border-brand-green/35'
+          ? 'dash-card-light hover:ring-1 hover:ring-brand-green/30'
+          : 'dash-card-neutral hover:border-white/20'
       }`}
       style={{ minHeight: '440px' }}
     >
@@ -70,7 +83,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary">
+            <span className={`text-xs font-mono font-bold uppercase tracking-wider ${textPrimary}`}>
               {plan.name}
             </span>
             <span className={`text-[10px] uppercase font-mono px-2 py-0.5 rounded-full border font-bold ${riskBadgeStyle}`}>
@@ -80,11 +93,11 @@ export const PlanCard: React.FC<PlanCardProps> = ({
 
           {/* Only ONE prominent badge for either Active or Recommended */}
           {isSelected ? (
-            <span className="flex items-center gap-1 text-[11px] font-semibold text-brand-lightGreen bg-brand-green/15 px-2.5 py-0.5 rounded-full border border-brand-green/30">
+            <span className="flex items-center gap-1 text-[11px] font-semibold text-brand-darkGreen bg-brand-green/15 px-2.5 py-0.5 rounded-full border border-brand-green/30">
               <Check className="w-3 h-3 stroke-[2.5]" /> Active Plan
             </span>
           ) : isRecommended ? (
-            <span className="flex items-center gap-1 text-[11px] font-semibold text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/30">
+            <span className="flex items-center gap-1 text-[11px] font-semibold text-amber-700 bg-amber-400/15 px-2.5 py-0.5 rounded-full border border-amber-500/30">
               <Sparkles className="w-3 h-3" /> Recommended
             </span>
           ) : null}
@@ -92,29 +105,31 @@ export const PlanCard: React.FC<PlanCardProps> = ({
 
         {/* Hero Metric: Monthly Investment */}
         <div className="pt-1">
-          <span className="text-[10px] uppercase font-bold text-text-tertiary tracking-wider block">
+          <span className={`text-[10px] uppercase font-bold tracking-wider block ${textTertiary}`}>
             Required Monthly Investment
           </span>
           <div className="flex items-baseline gap-1.5 mt-0.5">
             <AnimatedNumber
               value={plan.monthlyInvestmentRequired}
               currency="INR"
-              className="text-2xl sm:text-3xl font-mono font-extrabold text-brand-lightGreen tracking-tight"
+              className={`text-2xl sm:text-3xl font-mono font-extrabold tracking-tight ${textAccent}`}
             />
-            <span className="text-xs text-text-tertiary font-medium">/mo</span>
+            <span className={`text-xs font-medium ${textTertiary}`}>/mo</span>
           </div>
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-[11px] font-mono font-bold text-brand-mint bg-brand-mint/10 px-2 py-0.5 rounded-md border border-brand-mint/20">
+            <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-md border ${
+              isHighlighted ? 'text-brand-darkGreen bg-brand-green/10 border-brand-green/25' : 'text-brand-mint bg-brand-mint/10 border-brand-mint/20'
+            }`}>
               {plan.expectedCagr}% Expected CAGR
             </span>
-            <span className="text-[11px] text-text-tertiary">
+            <span className={`text-[11px] ${textTertiary}`}>
               Target: {formatINR(plan.targetGoalFutureValue, true)}
             </span>
           </div>
         </div>
 
         {/* Concise Benefit Statement */}
-        <p className="text-xs text-text-secondary leading-relaxed pt-1">
+        <p className={`text-xs leading-relaxed pt-1 ${textSecondary}`}>
           {benefitStatement}
         </p>
       </div>
@@ -133,27 +148,27 @@ export const PlanCard: React.FC<PlanCardProps> = ({
         <div className="flex items-center justify-center gap-3 mt-3 text-[11px] font-mono">
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full bg-brand-green" />
-            <span className="text-text-secondary">Equity <strong className="text-text-primary">{plan.allocation.equity}%</strong></span>
+            <span className={textSecondary}>Equity <strong className={textPrimary}>{plan.allocation.equity}%</strong></span>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full bg-brand-mint" />
-            <span className="text-text-secondary">Debt <strong className="text-text-primary">{plan.allocation.debt}%</strong></span>
+            <span className={textSecondary}>Debt <strong className={textPrimary}>{plan.allocation.debt}%</strong></span>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full bg-slate-400" />
-            <span className="text-text-secondary">Cash <strong className="text-text-primary">{plan.allocation.cash}%</strong></span>
+            <span className={textSecondary}>Cash <strong className={textPrimary}>{plan.allocation.cash}%</strong></span>
           </div>
         </div>
       </div>
 
       {/* Contextual Action Button */}
-      <div className="pt-3 border-t border-white/6">
+      <div className={`pt-3 border-t ${dividerBorder}`}>
         <button
           type="button"
           onClick={handleSelect}
           className={`w-full h-11 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-200 ${
             isSelected
-              ? 'bg-brand-green/15 text-brand-lightGreen border border-brand-green/40 hover:bg-brand-green/20'
+              ? 'bg-brand-green/15 text-brand-darkGreen border border-brand-green/40 hover:bg-brand-green/20'
               : 'bg-brand-green hover:bg-brand-darkGreen text-white shadow-glow-green hover:scale-[1.01] active:scale-[0.99]'
           }`}
         >

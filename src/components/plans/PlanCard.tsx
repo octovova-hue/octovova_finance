@@ -62,7 +62,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
           ? 'bg-[#101F18] border-brand-green/70 shadow-glow-green ring-1 ring-brand-green/30 sm:scale-[1.02]'
           : isRecommended
           ? 'bg-[#0E1A14] border-brand-green/40 hover:border-brand-green/60 hover:bg-[#111F19]'
-          : 'bg-[#0D1612] border-white/8 hover:border-white/18 hover:bg-[#0F1A15]'
+          : 'dash-card-dark hover:border-brand-green/35'
       }`}
       style={{ minHeight: '440px' }}
     >

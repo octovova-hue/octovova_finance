@@ -48,6 +48,80 @@ export const databaseService = {
   },
 
   /**
+   * 1b. Fetch a customer's full saved profile (income, expenses, assets,
+   * liabilities, goals, risk assessment) from Postgres. Used to rehydrate
+   * a session on a browser/device that doesn't have the account in its
+   * local cache yet (see login() in FinanceContext).
+   */
+  async getFullProfile(customerId: string): Promise<{
+    income: { id: string; source: string; monthlyAmount: number }[];
+    expenses: { id: string; category: string; monthlyAmount: number }[];
+    assets: { id: string; type: string; currentValue: number }[];
+    liabilities: { id: string; type: string; outstandingAmount: number; interestRate: number }[];
+    goals: {
+      id: string;
+      name: string;
+      goalType: string;
+      targetYear: number;
+      todayCost: number;
+      priority: number;
+      allocatedAssets?: number;
+      activePlanType?: string;
+      createdAt?: number;
+    }[];
+    riskProfile: { answers: number[]; score: number; category: string } | null;
+  } | null> {
+    if (!this.isLive() || !supabase) return null;
+    try {
+      const [incomeRes, expenseRes, assetRes, liabilityRes, goalRes, riskRes] = await Promise.all([
+        supabase.from('income').select('*').eq('customer_id', customerId),
+        supabase.from('expense').select('*').eq('customer_id', customerId),
+        supabase.from('asset').select('*').eq('customer_id', customerId),
+        supabase.from('liability').select('*').eq('customer_id', customerId),
+        supabase.from('financial_goal').select('*').eq('customer_id', customerId),
+        supabase.from('risk_assessment').select('*').eq('customer_id', customerId).order('created_at', { ascending: false }).limit(1),
+      ]);
+
+      const income = (incomeRes.data || []).map((r: DbIncome) => ({
+        id: r.income_id, source: r.source, monthlyAmount: r.monthly_amount,
+      }));
+      const expenses = (expenseRes.data || []).map((r: DbExpense) => ({
+        id: r.expense_id, category: r.category, monthlyAmount: r.monthly_amount,
+      }));
+      const assets = (assetRes.data || []).map((r: DbAsset) => ({
+        id: r.asset_id, type: r.type, currentValue: r.current_value,
+      }));
+      const liabilities = (liabilityRes.data || []).map((r: DbLiability) => ({
+        id: r.liability_id, type: r.type, outstandingAmount: r.outstanding_amount, interestRate: r.interest_rate,
+      }));
+      const goals = (goalRes.data || []).map((r: DbFinancialGoal) => ({
+        id: r.goal_id,
+        name: r.name,
+        goalType: r.goal_type,
+        targetYear: r.target_year,
+        todayCost: r.today_cost,
+        priority: r.priority,
+        allocatedAssets: r.allocated_assets,
+        activePlanType: r.active_plan_type,
+        createdAt: r.created_at ? new Date(r.created_at).getTime() : undefined,
+      }));
+      const riskRow = riskRes.data && riskRes.data[0];
+      const riskProfile = riskRow
+        ? {
+            answers: Array.isArray(riskRow.answers) ? riskRow.answers : Object.values(riskRow.answers || {}),
+            score: riskRow.score,
+            category: riskRow.category,
+          }
+        : null;
+
+      return { income, expenses, assets, liabilities, goals, riskProfile };
+    } catch (err) {
+      console.warn('[Postgres DB] getFullProfile connection error:', err);
+      return null;
+    }
+  },
+
+  /**
    * 2. CUSTOMER: Create or Upsert customer with secure salted hash
    */
   async createCustomer(

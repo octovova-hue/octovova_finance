@@ -18,6 +18,7 @@ export const AuthGate: React.FC = () => {
   const [loginPassword, setLoginPassword] = useState('');
 
   const [error, setError] = useState<string | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,17 +46,21 @@ export const AuthGate: React.FC = () => {
     }
   };
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!loginEmail.trim() || !loginPassword.trim()) {
       setError('Please fill in both email and password');
       return;
     }
-    const success = login(loginEmail.trim(), loginPassword.trim());
-    if (!success) {
-      setError('Invalid credentials. Please verify your email and password.');
-    } else {
-      setError(null);
+    setError(null);
+    setIsLoggingIn(true);
+    try {
+      const success = await login(loginEmail.trim(), loginPassword.trim());
+      if (!success) {
+        setError('Invalid credentials. Please verify your email and password.');
+      }
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -152,9 +157,14 @@ export const AuthGate: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-full bg-brand-green hover:bg-brand-darkGreen text-white font-bold text-xs uppercase tracking-wider shadow-glow-green transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+              disabled={isLoggingIn}
+              className="w-full py-3.5 rounded-full bg-brand-green hover:bg-brand-darkGreen disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-xs uppercase tracking-wider shadow-glow-green transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
             >
-              Access Dashboard <ArrowRight className="w-4 h-4" />
+              {isLoggingIn ? 'Checking...' : (
+                <>
+                  Access Dashboard <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
 
             {/* Demo User Fill (Clean helper) */}

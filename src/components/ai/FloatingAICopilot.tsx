@@ -34,7 +34,7 @@ export const FloatingAICopilot: React.FC = () => {
       id: 'quick_welcome',
       sender: 'assistant',
       timestamp: 'Just now',
-      text: `Hi **${user.name || 'Priya'}**! I am your AI Copilot. Ask me any questions about your **${activePlan?.name || 'Financial Plan'}**, SIP amounts, or what-if scenario simulations!`,
+      text: `Hi **${user.name || 'there'}**! I am your AI Copilot. Ask me any questions about your **${activePlan?.name || 'Financial Plan'}**, monthly investments, or what-if scenario simulations!`,
       category: 'general',
     },
   ]);
@@ -155,7 +155,7 @@ export const FloatingAICopilot: React.FC = () => {
               <div>
                 <h4 className="text-xs font-bold text-text-primary">Octovova AI Copilot</h4>
                 <p className="text-[10px] text-text-tertiary">
-                  Plan: {activePlan?.name || 'Balanced'} ({activePlan?.allocation.equity}% Eq)
+                  Plan: {activePlan?.name || 'Moderate Risk'} ({activePlan?.allocation.equity}% Eq)
                 </p>
               </div>
             </div>
@@ -185,7 +185,7 @@ export const FloatingAICopilot: React.FC = () => {
           {/* Quick Context Strip */}
           <div className="px-3 py-2 bg-brand-green/10 border-b border-brand-green/20 flex items-center justify-between text-[11px]">
             <span className="text-text-secondary">Cash Flow: <strong className="text-brand-lightGreen font-mono">+{formatINR(financials.monthlyCashFlow)}/mo</strong></span>
-            <span className="text-text-secondary">SIP Target: <strong className="text-brand-mint font-mono">{formatINR(activePlan?.monthlyInvestmentRequired || 132000)}/mo</strong></span>
+            <span className="text-text-secondary">Monthly Required: <strong className="text-brand-mint font-mono">{formatINR(activePlan?.monthlyInvestmentRequired || 132000)}/mo</strong></span>
           </div>
 
           {/* Messages Area */}

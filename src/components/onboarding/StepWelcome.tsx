@@ -9,7 +9,7 @@ interface StepWelcomeProps {
 export const StepWelcome: React.FC<StepWelcomeProps> = ({ onNext }) => {
   const { user, updateUser } = useFinance();
   const [name, setName] = useState(user.name || '');
-  const [age, setAge] = useState(user.age ? user.age.toString() : '30');
+  const [age, setAge] = useState(user.age ? user.age.toString() : '');
   const [stage, setStage] = useState<'name' | 'age'>('name');
   const [error, setError] = useState<string | null>(null);
 
@@ -58,7 +58,7 @@ export const StepWelcome: React.FC<StepWelcomeProps> = ({ onNext }) => {
                 setName(e.target.value);
                 if (error) setError(null);
               }}
-              placeholder="e.g. Priya Sharma"
+              placeholder="e.g. Rahul Verma"
               className="w-full text-center text-xl sm:text-2xl font-bold bg-surface border-2 border-border focus:border-brand-green rounded-full px-6 py-4 text-text-primary placeholder:text-text-tertiary outline-none transition-all shadow-glass"
             />
             {error && (

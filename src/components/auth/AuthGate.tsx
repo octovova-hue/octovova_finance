@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useFinance } from '../../context/FinanceContext';
 import { ArrowRight, Lock, Mail, User as UserIcon } from 'lucide-react';
+import { OctovovaLogo } from '../common/OctovovaLogo';
 
 export const AuthGate: React.FC = () => {
   const { login, register } = useFinance();
@@ -66,11 +67,9 @@ export const AuthGate: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 selection:bg-brand-green selection:text-white">
-      {/* Brand Header - Tagline removed per Section 3 */}
-      <div className="text-center space-y-3 mb-8 animate-in fade-in duration-300">
-        <div className="w-16 h-16 rounded-full bg-gradient-green mx-auto flex items-center justify-center shadow-glow-green text-white text-3xl font-extrabold">
-          💎
-        </div>
+      {/* Brand Header with Circular Green Bar Chart Logo */}
+      <div className="text-center space-y-3 mb-8 animate-in fade-in duration-300 flex flex-col items-center">
+        <OctovovaLogo size="xl" />
         <div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-text-primary">
             Octovova <span className="text-brand-lightGreen">Finance</span>
@@ -125,7 +124,7 @@ export const AuthGate: React.FC = () => {
                   type="email"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="name@domain.com"
+                  placeholder="rahul@gmail.com"
                   className="w-full bg-surface border border-border focus:border-brand-green rounded-full pl-11 pr-4 py-3 text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all"
                 />
               </div>
@@ -165,7 +164,7 @@ export const AuthGate: React.FC = () => {
                 onClick={fillDemoAccount}
                 className="text-brand-lightGreen font-semibold hover:underline"
               >
-                Sign In with Priya Sharma Demo
+                Sign In with Demo Account
               </button>
             </div>
           </form>
@@ -199,7 +198,7 @@ export const AuthGate: React.FC = () => {
                     autoFocus
                     value={regEmail}
                     onChange={(e) => setRegEmail(e.target.value)}
-                    placeholder="rahul@example.com"
+                    placeholder="rahul@gmail.com"
                     className="w-full bg-surface border border-border focus:border-brand-green rounded-full pl-11 pr-4 py-3 text-sm font-bold text-text-primary placeholder:text-text-tertiary outline-none"
                   />
                 </div>

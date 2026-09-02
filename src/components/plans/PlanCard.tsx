@@ -97,7 +97,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, onOpenDetails }) => {
       {/* Key Numbers Grid */}
       <div className="grid grid-cols-2 gap-3 pt-2">
         <div className="p-3.5 rounded-2xl glass-card border border-border">
-          <span className="text-[10px] uppercase font-bold text-text-tertiary block">Monthly SIP Target</span>
+          <span className="text-[10px] uppercase font-bold text-text-tertiary block">Required Investment</span>
           <AnimatedNumber
             value={plan.monthlyInvestmentRequired}
             currency="INR"

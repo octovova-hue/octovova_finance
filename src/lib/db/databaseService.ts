@@ -54,21 +54,24 @@ export const databaseService = {
     name: string,
     email: string,
     passwordHash: string,
-    age: number = 30
+    age: number = 30,
+    preferredCustomerId?: string
   ): Promise<Omit<DbCustomer, 'password_hash'> | null> {
     if (!this.isLive() || !supabase) return null;
     try {
+      const payload: any = {
+        name,
+        email,
+        password_hash: passwordHash,
+        age,
+      };
+      if (preferredCustomerId) {
+        payload.customer_id = preferredCustomerId;
+      }
+
       const { data, error } = await supabase
         .from('customer')
-        .upsert(
-          {
-            name,
-            email,
-            password_hash: passwordHash,
-            age,
-          },
-          { onConflict: 'email' }
-        )
+        .upsert(payload, { onConflict: 'email' })
         .select('customer_id, name, age, email, created_at, updated_at')
         .single();
 
@@ -118,7 +121,7 @@ export const databaseService = {
   },
 
   /**
-   * 4. Full Financial Profile Sync: Save Onboarding Data
+   * 4. Full Financial Profile Sync: Save All Onboarding Data
    */
   async syncFullProfileToPostgres(
     customerId: string,
@@ -128,111 +131,185 @@ export const databaseService = {
   ): Promise<void> {
     if (!this.isLive() || !supabase) return;
     try {
+      console.log('[Postgres DB] 🚀 Starting full financial sync for user:', userProfile.email);
+
+      // Verify or resolve authoritative customer_id in PostgreSQL
+      let targetCustomerId = customerId;
+      const { data: existingCustomer } = await supabase
+        .from('customer')
+        .select('customer_id')
+        .eq('email', userProfile.email)
+        .maybeSingle();
+
+      if (existingCustomer?.customer_id) {
+        targetCustomerId = existingCustomer.customer_id;
+      } else {
+        // Create customer record if not already present
+        const { data: newCust, error: custErr } = await supabase
+          .from('customer')
+          .upsert({
+            customer_id: customerId,
+            name: userProfile.name || 'User',
+            email: userProfile.email,
+            password_hash: 'sha256_client_registered_user',
+            age: userProfile.age || 30,
+          }, { onConflict: 'email' })
+          .select('customer_id')
+          .single();
+
+        if (newCust?.customer_id) {
+          targetCustomerId = newCust.customer_id;
+        } else if (custErr) {
+          console.error('[Postgres DB] Error ensuring customer row:', custErr.message);
+        }
+      }
+
+      console.log('[Postgres DB] Using customer_id:', targetCustomerId, 'and age:', userProfile.age);
+
+      // 0. Update Customer Profile with Real Name & Age
+      const { error: custUpdErr } = await supabase
+        .from('customer')
+        .update({
+          name: userProfile.name || 'User',
+          age: userProfile.age || 30,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('customer_id', targetCustomerId);
+
+      if (custUpdErr) {
+        console.error('[Postgres DB] Customer age/name update error:', custUpdErr.message);
+      } else {
+        console.log('✅ [Postgres DB] Updated customer record with age:', userProfile.age);
+      }
+
       // 1. Incomes
       if (userProfile.income && userProfile.income.length > 0) {
-        await supabase.from('income').delete().eq('customer_id', customerId);
-        await supabase.from('income').insert(
+        await supabase.from('income').delete().eq('customer_id', targetCustomerId);
+        const { error: incErr } = await supabase.from('income').insert(
           userProfile.income.map((inc) => ({
-            customer_id: customerId,
+            customer_id: targetCustomerId,
             source: inc.source,
             monthly_amount: inc.monthlyAmount,
           }))
         );
+        if (incErr) console.error('[Postgres DB] income error:', incErr.message);
+        else console.log('✅ [Postgres DB] Saved income rows');
       }
 
       // 2. Expenses
       if (userProfile.expenses && userProfile.expenses.length > 0) {
-        await supabase.from('expense').delete().eq('customer_id', customerId);
-        await supabase.from('expense').insert(
+        await supabase.from('expense').delete().eq('customer_id', targetCustomerId);
+        const { error: expErr } = await supabase.from('expense').insert(
           userProfile.expenses.map((exp) => ({
-            customer_id: customerId,
+            customer_id: targetCustomerId,
             category: exp.category,
             monthly_amount: exp.monthlyAmount,
             is_itemized: true,
           }))
         );
+        if (expErr) console.error('[Postgres DB] expense error:', expErr.message);
+        else console.log('✅ [Postgres DB] Saved expense rows');
       }
 
       // 3. Assets
       if (userProfile.assets && userProfile.assets.length > 0) {
-        await supabase.from('asset').delete().eq('customer_id', customerId);
-        await supabase.from('asset').insert(
+        await supabase.from('asset').delete().eq('customer_id', targetCustomerId);
+        const { error: astErr } = await supabase.from('asset').insert(
           userProfile.assets.map((ast) => ({
-            customer_id: customerId,
+            customer_id: targetCustomerId,
             type: ast.type,
             current_value: ast.currentValue,
           }))
         );
+        if (astErr) console.error('[Postgres DB] asset error:', astErr.message);
+        else console.log('✅ [Postgres DB] Saved asset rows');
       }
 
       // 4. Liabilities
       if (userProfile.liabilities && userProfile.liabilities.length > 0) {
-        await supabase.from('liability').delete().eq('customer_id', customerId);
-        await supabase.from('liability').insert(
+        await supabase.from('liability').delete().eq('customer_id', targetCustomerId);
+        const { error: liaErr } = await supabase.from('liability').insert(
           userProfile.liabilities.map((lia) => ({
-            customer_id: customerId,
+            customer_id: targetCustomerId,
             type: lia.type,
             outstanding_amount: lia.outstandingAmount,
             interest_rate: lia.interestRate || 0,
           }))
         );
+        if (liaErr) console.error('[Postgres DB] liability error:', liaErr.message);
+        else console.log('✅ [Postgres DB] Saved liability rows');
       }
 
       // 5. Goals
       if (userProfile.goals && userProfile.goals.length > 0) {
-        for (const goal of userProfile.goals) {
-          await supabase.from('financial_goal').upsert(
-            {
-              customer_id: customerId,
-              name: goal.name,
-              goal_type: goal.goalType,
-              target_year: goal.targetYear,
-              today_cost: goal.todayCost,
-              priority: goal.priority,
-              allocated_assets: goal.allocatedAssets || 0,
-              active_plan_type: goal.activePlanType || 'balanced',
-            },
-            { onConflict: 'customer_id, name' }
-          );
-        }
+        await supabase.from('financial_goal').delete().eq('customer_id', targetCustomerId);
+        const { error: goalErr } = await supabase.from('financial_goal').insert(
+          userProfile.goals.map((g) => ({
+            customer_id: targetCustomerId,
+            name: g.name,
+            goal_type: g.goalType,
+            target_year: g.targetYear,
+            today_cost: g.todayCost,
+            priority: g.priority,
+            allocated_assets: g.allocatedAssets || 0,
+            active_plan_type: (g.activePlanType || 'balanced').toLowerCase() as any,
+          }))
+        );
+        if (goalErr) console.error('[Postgres DB] financial_goal error:', goalErr.message);
+        else console.log('✅ [Postgres DB] Saved financial_goal rows');
       }
 
       // 6. Risk Assessment
       if (userProfile.riskProfile) {
-        await supabase.from('risk_assessment').insert({
-          customer_id: customerId,
+        const categoryMap: Record<string, string> = {
+          Conservative: 'Low',
+          Balanced: 'Moderate',
+          Growth: 'High',
+          Aggressive: 'Aggressive',
+          Low: 'Low',
+          Moderate: 'Moderate',
+          High: 'High',
+        };
+        const dbCategory = categoryMap[userProfile.riskProfile.category] || 'Moderate';
+
+        await supabase.from('risk_assessment').delete().eq('customer_id', targetCustomerId);
+        const { error: riskErr } = await supabase.from('risk_assessment').insert({
+          customer_id: targetCustomerId,
           answers: { values: userProfile.riskProfile.answers },
           score: userProfile.riskProfile.score,
-          category: userProfile.riskProfile.category as any,
+          category: dbCategory as any,
         });
+        if (riskErr) console.error('[Postgres DB] risk_assessment error:', riskErr.message);
+        else console.log('✅ [Postgres DB] Saved risk_assessment');
       }
 
       // 7. Plans, Allocations & AI Recommendations
       if (plans && plans.length > 0) {
+        await supabase.from('financial_plan').delete().eq('customer_id', targetCustomerId);
+
         for (const plan of plans) {
           const isSelected = userProfile.activePlanId === plan.planId;
-          const { data: insertedPlan } = await supabase
+          const { data: insertedPlan, error: planErr } = await supabase
             .from('financial_plan')
-            .upsert(
-              {
-                customer_id: customerId,
-                plan_type: plan.type,
-                name: plan.name,
-                monthly_investment_required: plan.monthlyInvestmentRequired,
-                expected_cagr: plan.expectedCagr,
-                target_goal_future_value: plan.targetGoalFutureValue,
-                monte_carlo_probability: 85.0,
-                engine_version: 'v1.0.0-pure-math',
-                is_selected: isSelected,
-              },
-              { onConflict: 'customer_id, plan_type' }
-            )
+            .insert({
+              customer_id: targetCustomerId,
+              plan_type: plan.type,
+              name: plan.name,
+              monthly_investment_required: plan.monthlyInvestmentRequired,
+              expected_cagr: plan.expectedCagr,
+              target_goal_future_value: plan.targetGoalFutureValue,
+              monte_carlo_probability: 85.0,
+              engine_version: 'v1.0.0-pure-math',
+              is_selected: isSelected,
+            })
             .select()
             .single();
 
-          if (insertedPlan) {
+          if (planErr) {
+            console.error('[Postgres DB] financial_plan error:', planErr.message);
+          } else if (insertedPlan) {
             // Plan Allocations
-            await supabase.from('plan_allocation').upsert([
+            const { error: allocErr } = await supabase.from('plan_allocation').insert([
               {
                 plan_id: insertedPlan.plan_id,
                 asset_class: 'equity',
@@ -249,20 +326,25 @@ export const databaseService = {
                 percentage: plan.allocation.cash,
               },
             ]);
+            if (allocErr) console.error('[Postgres DB] plan_allocation error:', allocErr.message);
 
             // AI Recommendation
             if (plan.narrative) {
-              await supabase.from('ai_recommendation').upsert({
+              const { error: aiErr } = await supabase.from('ai_recommendation').insert({
                 plan_id: insertedPlan.plan_id,
                 narrative_text: plan.narrative.explanation,
                 model_version: 'gemini-1.5-flash',
                 prompt_version: 'prompt-v2.0',
                 validation_status: 'verified',
               });
+              if (aiErr) console.error('[Postgres DB] ai_recommendation error:', aiErr.message);
             }
           }
         }
+        console.log('✅ [Postgres DB] Saved financial_plan, allocations, and ai_recommendations');
       }
+
+      console.log('🎉 [Postgres DB] ALL tables synced successfully for customer:', userProfile.email);
     } catch (err) {
       console.warn('[Postgres DB] syncFullProfileToPostgres error:', err);
     }
@@ -282,7 +364,7 @@ export const databaseService = {
         today_cost: goal.todayCost,
         priority: goal.priority,
         allocated_assets: goal.allocatedAssets || 0,
-        active_plan_type: goal.activePlanType || 'balanced',
+        active_plan_type: (goal.activePlanType || 'balanced').toLowerCase() as any,
       });
     } catch (err) {
       console.warn('[Postgres DB] saveGoal error:', err);

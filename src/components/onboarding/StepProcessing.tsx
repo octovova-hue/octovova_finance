@@ -7,6 +7,8 @@ import {
 } from '../common/ColoredIcon';
 import confetti from 'canvas-confetti';
 
+import { OctovovaLogo } from '../common/OctovovaLogo';
+
 interface StepProcessingProps {
   onComplete: () => void;
 }
@@ -44,8 +46,8 @@ export const StepProcessing: React.FC<StepProcessingProps> = ({ onComplete }) =>
       {/* Animated Core Logo */}
       <div className="relative flex items-center justify-center">
         <div className="w-24 h-24 rounded-full bg-brand-green/20 border-2 border-brand-green animate-ping absolute inset-0 opacity-40" />
-        <div className="w-24 h-24 rounded-full glass-card-raised border-2 border-brand-green flex items-center justify-center shadow-glow-green relative z-10 text-3xl">
-          💎
+        <div className="relative z-10">
+          <OctovovaLogo size="xl" />
         </div>
       </div>
 

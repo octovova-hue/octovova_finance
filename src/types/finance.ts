@@ -33,7 +33,7 @@ export interface LiabilityItem {
   interestRate: number; // e.g. 8.5 for 8.5%
 }
 
-export type GoalType = 'House' | 'Wedding' | 'Retirement' | 'Education' | 'Emergency' | 'Custom';
+export type GoalType = 'House' | 'Wedding' | 'Car' | 'Other' | 'Retirement' | 'Education' | 'Emergency' | 'Custom';
 
 export interface GoalItem {
   id: string;

@@ -30,12 +30,10 @@ const ASSET_ICONS: Record<AssetType, React.ReactNode> = {
 export const StepAssets: React.FC<StepAssetsProps> = ({ onNext, onPrev }) => {
   const { user, updateUser } = useFinance();
   const [assets, setAssets] = useState<AssetItem[]>(
-    user.assets.length > 0
+    user.assets.length > 0 && user.assets.some(a => (a.currentValue || 0) > 0)
       ? user.assets
       : [
-          { id: 'ast_1', type: 'Mutual Funds', currentValue: 700000 },
-          { id: 'ast_2', type: 'Fixed Deposit', currentValue: 300000 },
-          { id: 'ast_3', type: 'Cash', currentValue: 200000 },
+          { id: 'ast_1', type: 'Mutual Funds', currentValue: 0 },
         ]
   );
 
@@ -46,7 +44,7 @@ export const StepAssets: React.FC<StepAssetsProps> = ({ onNext, onPrev }) => {
   const handleAddAsset = () => {
     setAssets(prev => [
       ...prev,
-      { id: `ast_${Date.now()}`, type: 'Mutual Funds', currentValue: 100000 },
+      { id: `ast_${Date.now()}`, type: 'Mutual Funds', currentValue: 0 },
     ]);
   };
 
@@ -129,9 +127,9 @@ export const StepAssets: React.FC<StepAssetsProps> = ({ onNext, onPrev }) => {
                   type="number"
                   min="0"
                   step="10000"
-                  value={item.currentValue || ''}
+                  value={item.currentValue === 0 ? '' : item.currentValue}
                   onChange={(e) => handleUpdate(item.id, 'currentValue', parseFloat(e.target.value) || 0)}
-                  placeholder="Asset Value"
+                  placeholder="0"
                   className="w-full bg-surface border border-border focus:border-brand-green rounded-full pl-9 pr-4 py-2 text-sm font-mono font-bold text-text-primary outline-none"
                 />
               </div>

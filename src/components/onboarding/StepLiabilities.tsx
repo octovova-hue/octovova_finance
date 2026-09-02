@@ -39,10 +39,10 @@ const LIABILITY_ICONS: Record<LiabilityType, React.ReactNode> = {
 export const StepLiabilities: React.FC<StepLiabilitiesProps> = ({ onNext, onPrev }) => {
   const { user, updateUser } = useFinance();
   const [liabilities, setLiabilities] = useState<LiabilityItem[]>(
-    user.liabilities.length > 0
+    user.liabilities.length > 0 && user.liabilities.some(l => (l.outstandingAmount || 0) > 0)
       ? user.liabilities
       : [
-          { id: 'lia_1', type: 'Personal Loan', outstandingAmount: 500000, interestRate: 11.5 },
+          { id: 'lia_1', type: 'Personal Loan', outstandingAmount: 0, interestRate: 11.5 },
         ]
   );
 
@@ -52,7 +52,7 @@ export const StepLiabilities: React.FC<StepLiabilitiesProps> = ({ onNext, onPrev
       {
         id: `lia_${Date.now()}`,
         type: 'Credit Card',
-        outstandingAmount: 50000,
+        outstandingAmount: 0,
         interestRate: DEFAULT_INTEREST_RATES['Credit Card'],
       },
     ]);
@@ -124,9 +124,9 @@ export const StepLiabilities: React.FC<StepLiabilitiesProps> = ({ onNext, onPrev
                   type="number"
                   min="0"
                   step="5000"
-                  value={item.outstandingAmount || ''}
+                  value={item.outstandingAmount === 0 ? '' : item.outstandingAmount}
                   onChange={(e) => handleUpdate(item.id, 'outstandingAmount', parseFloat(e.target.value) || 0)}
-                  placeholder="Outstanding Amount"
+                  placeholder="0"
                   className="w-full bg-surface border border-border focus:border-brand-green rounded-full pl-8 pr-4 py-2 text-xs font-mono font-bold text-text-primary outline-none"
                 />
               </div>

@@ -26,9 +26,9 @@ const SOURCE_ICONS: Record<IncomeSourceType, React.ReactNode> = {
 export const StepIncome: React.FC<StepIncomeProps> = ({ onNext, onPrev }) => {
   const { user, updateUser } = useFinance();
   const [incomes, setIncomes] = useState<IncomeItem[]>(
-    user.income.length > 0 
-      ? user.income 
-      : [{ id: 'inc_1', source: 'Salary', monthlyAmount: 150000 }]
+    user.income.length > 0 && user.income.some(i => (i.monthlyAmount || 0) > 0)
+      ? user.income
+      : [{ id: 'inc_1', source: 'Salary', monthlyAmount: 0 }]
   );
 
   const totalMonthlyIncome = incomes.reduce((sum, item) => sum + (item.monthlyAmount || 0), 0);
@@ -36,7 +36,7 @@ export const StepIncome: React.FC<StepIncomeProps> = ({ onNext, onPrev }) => {
   const handleAddSource = () => {
     setIncomes(prev => [
       ...prev,
-      { id: `inc_${Date.now()}`, source: 'Business', monthlyAmount: 25000 },
+      { id: `inc_${Date.now()}`, source: 'Business', monthlyAmount: 0 },
     ]);
   };
 
@@ -112,9 +112,9 @@ export const StepIncome: React.FC<StepIncomeProps> = ({ onNext, onPrev }) => {
                   type="number"
                   min="0"
                   step="1000"
-                  value={item.monthlyAmount || ''}
+                  value={item.monthlyAmount === 0 ? '' : item.monthlyAmount}
                   onChange={(e) => handleUpdate(item.id, 'monthlyAmount', parseFloat(e.target.value) || 0)}
-                  placeholder="Monthly amount"
+                  placeholder="0"
                   className="w-full bg-surface border border-border focus:border-brand-green rounded-full pl-9 pr-4 py-2 text-sm font-mono font-bold text-text-primary outline-none"
                 />
               </div>

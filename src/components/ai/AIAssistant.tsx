@@ -46,14 +46,14 @@ export const AIAssistant: React.FC = () => {
       id: 'welcome_1',
       sender: 'assistant',
       timestamp: 'Just now',
-      text: `Hello **${user.name || 'Priya'}**! I am your **Octovova AI Wealth Advisor & Scenario Simulator**.
+      text: `Hello **${user.name || 'there'}**! I am your **Octovova AI Wealth Advisor & Scenario Simulator**.
       
 I have complete context on your financial profile:
 • **Net Worth**: ${formatINR(financials.netWorth)}
 • **Monthly Cash Flow**: ${formatINR(financials.monthlyCashFlow)}/month
 • **Risk Profile**: ${user.riskProfile.category} (Score ${user.riskProfile.score}/25)
-• **Active Strategy**: ${activePlan?.name || 'Balanced Growth'} (${activePlan?.allocation.equity || 55}% Equity / ${activePlan?.allocation.debt || 40}% Debt)
-• **Target Goal**: ${selectedGoal?.name || 'House'} (${selectedGoal?.targetYear || 2031})
+• **Active Strategy**: ${activePlan?.name || 'Moderate Risk Plan'} (${activePlan?.allocation.equity || 55}% Equity / ${activePlan?.allocation.debt || 40}% Debt)
+• **Target Goal**: ${selectedGoal?.name || 'Dream Home'} (${selectedGoal?.targetYear || 2031})
 
 Ask me anything about your asset allocation, debt optimization, or simulate **What-If scenarios** (e.g., "What if I invest ₹15,000 more/mo?").`,
       category: 'general',
@@ -367,7 +367,7 @@ Ask me anything about your asset allocation, debt optimization, or simulate **Wh
               <div className="p-3.5 rounded-2xl glass-card-raised border border-border">
                 <span className="text-[10px] text-text-tertiary block font-semibold">Investor Profile</span>
                 <strong className="text-text-primary font-bold">
-                  {user.name || 'Priya Sharma'} (Age {user.age || 35})
+                  {user.name || 'Investor'} (Age {user.age || 30})
                 </strong>
                 <span className="text-[11px] text-text-secondary block mt-0.5">
                   Risk Category: <strong className="text-brand-lightGreen">{user.riskProfile.category}</strong>
@@ -394,7 +394,7 @@ Ask me anything about your asset allocation, debt optimization, or simulate **Wh
               <div className="p-3.5 rounded-2xl glass-card-raised border border-border">
                 <span className="text-[10px] text-text-tertiary block font-semibold">Selected Strategy</span>
                 <strong className="text-brand-lightGreen font-bold block">
-                  {activePlan?.name || 'Balanced Growth'}
+                  {activePlan?.name || 'Moderate Risk Plan'}
                 </strong>
                 <div className="flex items-center justify-between text-[11px] text-text-secondary mt-1">
                   <span>Allocation:</span>

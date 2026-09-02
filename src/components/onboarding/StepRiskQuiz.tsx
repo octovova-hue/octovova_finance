@@ -184,11 +184,10 @@ export const StepRiskQuiz: React.FC<StepRiskQuizProps> = ({ onNext, onPrev }) =>
 
           <div className="space-y-2.5">
             {[
-              { label: 'Unpredictable / Seasonal', desc: 'Variable earnings with frequent dry spells', score: 1 },
-              { label: 'Variable Commission', desc: 'Base salary plus fluctuating bonus structures', score: 2 },
-              { label: 'Moderate Freelance / Business', desc: 'Steady client base with occasional variance', score: 3 },
-              { label: 'Stable Salaried Professional', desc: 'Predictable monthly paycheck with stable company', score: 4 },
-              { label: 'High Security / Dual Household Income', desc: 'Multiple stable incomes with high reserves', score: 5 },
+              { label: 'Irregular Income', desc: 'Variable earnings with fluctuating monthly inflows', score: 1 },
+              { label: 'Bonus-Based Income', desc: 'Base salary supplemented with performance bonuses', score: 2 },
+              { label: 'Freelance / Self-Employed', desc: 'Contract or business earnings based on client projects', score: 3 },
+              { label: 'Regular Salary / Fixed Salary', desc: 'Consistent, predictable monthly paycheck', score: 4 },
             ].map((opt) => {
               const isSelected = stabilityScore === opt.score;
               return (

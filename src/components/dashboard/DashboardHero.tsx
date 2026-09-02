@@ -123,8 +123,8 @@ export const DashboardHero: React.FC = () => {
 
       {/* FULL-DETAIL RISK PROFILE MODAL (Reachable by tapping dashboard gauge card) */}
       {showFullRiskModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-lg glass-card-raised rounded-card border border-brand-green/40 p-6 sm:p-8 shadow-glass space-y-5 text-center relative animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-lg bg-[#0B1510] rounded-card border border-border/80 p-6 sm:p-8 shadow-2xl space-y-5 text-center relative z-10 animate-in zoom-in-95 duration-200">
             <button
               type="button"
               onClick={() => setShowFullRiskModal(false)}

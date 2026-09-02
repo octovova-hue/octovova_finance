@@ -61,7 +61,7 @@ interface FinanceContextType {
   addGoal: (goal: Omit<GoalItem, 'id'>) => void;
   removeGoal: (id: string) => void;
   login: (email: string, passwordHash: string) => boolean;
-  register: (name: string, email: string, passwordHash: string) => void;
+  register: (name: string, email: string, passwordHash: string, userAge?: number) => Promise<void> | void;
   logout: () => void;
   completeOnboarding: () => void;
   resetToDemo: () => void;
@@ -277,14 +277,19 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
     return false;
   };
 
-  const register = async (name: string, email: string, rawPassword: string) => {
-    const newUserId = generateUUID();
+  const register = async (name: string, email: string, rawPassword: string, userAge?: number) => {
+    const clientUuid = generateUUID();
     const secureHash = await hashPassword(rawPassword);
+    const resolvedAge = userAge && userAge >= 18 && userAge <= 100 ? userAge : 30;
+
+    // Create record in PostgreSQL first to get/confirm the database UUID with real age
+    const dbCustomer = await databaseService.createCustomer(name, email, secureHash, resolvedAge, clientUuid);
+    const resolvedCustomerId = dbCustomer?.customer_id || clientUuid;
 
     const newProfile: UserProfile = {
-      id: newUserId,
+      id: resolvedCustomerId,
       name,
-      age: 30,
+      age: resolvedAge,
       email,
       avatar: '🧑‍💼',
       hasCompletedOnboarding: false,
@@ -328,9 +333,6 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
     setIsOnboarded(false);
     setOnboardingStep(0);
     localStorage.setItem('octovova_current_user_email', email);
-
-    // Create record in PostgreSQL with salted cryptographic hash
-    databaseService.createCustomer(name, email, secureHash, 30);
   };
 
   const logout = () => {
@@ -341,17 +343,25 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
     setOnboardingStep(0);
   };
 
-  const completeOnboarding = () => {
+  const completeOnboarding = async () => {
     const updatedUser = { ...user, hasCompletedOnboarding: true };
     setUser(updatedUser);
     setIsOnboarded(true);
     setOnboardingStep(8);
     setActiveTab('dashboard');
 
-    // Async sync all onboarding inputs to PostgreSQL tables
-    if (updatedUser.id) {
-      databaseService.syncFullProfileToPostgres(updatedUser.id, updatedUser, plans, selectedGoal);
+    if (currentEmail) {
+      setUsersDb(prev => ({
+        ...prev,
+        [currentEmail]: {
+          ...prev[currentEmail],
+          profile: updatedUser,
+        }
+      }));
     }
+
+    // Sync all onboarding inputs to PostgreSQL tables across all 13 tables
+    await databaseService.syncFullProfileToPostgres(updatedUser.id, updatedUser, plans, selectedGoal);
   };
 
   const resetToDemo = () => {

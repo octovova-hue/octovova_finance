@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useFinance } from '../../context/FinanceContext';
+import { OctovovaLogo } from '../common/OctovovaLogo';
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { RiskBadge } from '../common/Badge';
 import { formatINR } from '../../lib/formatters';
@@ -25,26 +26,9 @@ import {
   X,
   Target,
   Layers,
-  Database,
 } from 'lucide-react';
-import { DatabaseStatusModal } from '../common/DatabaseStatusModal';
 
 const PRESET_AVATARS = ['🧑‍💼', '👩‍💻', '👨‍🚀', '👩‍⚕️', '🧙‍♂️', '🦁', '💎', '🚀', '📈'];
-
-const getGoalIcon = (goalType: string) => {
-  switch (goalType) {
-    case 'House':
-      return <HouseColoredIcon className="w-4 h-4" />;
-    case 'Wedding':
-      return <WeddingRingsColoredIcon className="w-4 h-4" />;
-    case 'Retirement':
-      return <RetirementIslandColoredIcon className="w-4 h-4" />;
-    case 'Education':
-      return <GraduationCapColoredIcon className="w-4 h-4" />;
-    default:
-      return <BullseyeTargetColoredIcon className="w-4 h-4" />;
-  }
-};
 
 export const Header: React.FC = () => {
   const {
@@ -52,47 +36,56 @@ export const Header: React.FC = () => {
     updateUser,
     activeTab,
     setActiveTab,
-    financials,
-    resetToDemo,
-    logout,
     isOnboarded,
-    updateProfileBasic,
+    logout,
     updateGoalPlan,
+    updateProfileBasic,
   } = useFinance();
 
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
-  const [isDbModalOpen, setIsDbModalOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Section 4: User Profile Editing Fields in dropdown
-  const [editName, setEditName] = useState<string>(user.name || 'Priya Sharma');
-  const [editAge, setEditAge] = useState<number>(user.age || 35);
-  const [editSalary, setEditSalary] = useState<number>(financials.totalMonthlyIncome || 150000);
+  const [editName, setEditName] = useState<string>(user.name || '');
+  const [editAge, setEditAge] = useState<number>(user.age || 30);
+  const [editSalary, setEditSalary] = useState<number>(user.income?.[0]?.monthlyAmount || 150000);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
 
+  // Keep edit fields synced if user updates elsewhere
   useEffect(() => {
-    if (isProfileOpen) {
-      setEditName(user.name || 'Priya Sharma');
-      setEditAge(user.age || 35);
-      setEditSalary(financials.totalMonthlyIncome || 150000);
-      setSaveSuccess(false);
-    }
-  }, [isProfileOpen, user, financials]);
+    setEditName(user.name || '');
+    setEditAge(user.age || 30);
+    setEditSalary(user.income?.[0]?.monthlyAmount || 150000);
+  }, [user.name, user.age, user.income]);
 
-  // Click outside listener
+  // Close dropdown on outside click
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setIsProfileOpen(false);
       }
     };
-    if (isProfileOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const getGoalIcon = (goalType: string) => {
+    switch (goalType.toLowerCase()) {
+      case 'house':
+      case 'dream home':
+        return <span className="text-sm">🏡</span>;
+      case 'wedding':
+        return <span className="text-sm">💍</span>;
+      case 'car':
+        return <span className="text-sm">🚗</span>;
+      case 'retirement':
+        return <span className="text-sm">🏖️</span>;
+      case 'education':
+        return <span className="text-sm">🎓</span>;
+      default:
+        return <Target className="w-3.5 h-3.5 text-brand-lightGreen" />;
     }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isProfileOpen]);
+  };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,16 +97,14 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-background/70 backdrop-blur-xl border-b border-border transition-all">
+    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-xl border-b border-border transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        {/* Brand Logo - Section 3: Tagline removed */}
+        {/* Brand Logo with Circular Green Bar-Chart Icon */}
         <div
           className="flex items-center gap-2.5 cursor-pointer select-none"
           onClick={() => setActiveTab('dashboard')}
         >
-          <div className="w-9 h-9 rounded-full bg-gradient-green flex items-center justify-center shadow-glow-green text-white font-extrabold text-lg">
-            💎
-          </div>
+          <OctovovaLogo size="md" />
           <div>
             <span className="text-base font-extrabold tracking-tight text-text-primary flex items-center gap-1.5">
               Octovova <span className="text-brand-lightGreen">Finance</span>
@@ -159,39 +150,8 @@ export const Header: React.FC = () => {
           </nav>
         )}
 
-        {/* Right Tools & Profile */}
+        {/* Right Tools & Profile (Net worth, DB button, and refresh button removed per Section 6) */}
         <div className="flex items-center gap-2 sm:gap-3 relative">
-          {isOnboarded && (
-            <div className="hidden sm:flex flex-col items-end pr-3 border-r border-border">
-              <span className="text-[10px] uppercase font-bold text-text-tertiary">Net Worth</span>
-              <AnimatedNumber
-                value={financials.netWorth}
-                currency="INR"
-                compact={true}
-                className="text-xs font-extrabold text-brand-lightGreen"
-              />
-            </div>
-          )}
-
-          {/* Database Connection Test Trigger */}
-          <button
-            onClick={() => setIsDbModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface hover:bg-surface-hover border border-border hover:border-brand-green text-xs font-semibold text-text-secondary hover:text-text-primary transition-all"
-            title="PostgreSQL Database Link & Status"
-          >
-            <Database className="w-3.5 h-3.5 text-brand-lightGreen" />
-            <span className="hidden sm:inline text-[11px]">DB Link</span>
-          </button>
-
-          {/* Quick Demo Reset Trigger */}
-          <button
-            onClick={resetToDemo}
-            className="p-2 rounded-full bg-surface hover:bg-surface-hover border border-border text-text-tertiary hover:text-text-primary transition-colors text-xs"
-            title="Reset to Demo Data"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-
           {/* SECTION 4: PROFILE & SETTINGS MENU */}
           <div className="relative" ref={dropdownRef}>
             <button
@@ -212,11 +172,11 @@ export const Header: React.FC = () => {
               <ChevronDown className={`w-3.5 h-3.5 text-text-tertiary transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            {/* PROFILE DROPDOWN PANEL (Dynamic scrollable glassmorphism card) */}
+            {/* PROFILE DROPDOWN PANEL (Section 7: Opaque background fix) */}
             {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-[350px] sm:w-[420px] max-h-[calc(100vh-5rem)] overflow-y-auto glass-card-raised rounded-card border border-border shadow-glass p-5 space-y-4 z-50 animate-in fade-in zoom-in-95 duration-150 scrollbar-thin scrollbar-thumb-white/20">
-                {/* Header Summary (Sticky top inside dropdown) */}
-                <div className="sticky top-0 bg-surface-raised/95 backdrop-blur-md -mx-5 -mt-5 p-5 pb-3 border-b border-border z-10 flex items-start justify-between">
+              <div className="absolute right-0 mt-2 w-[350px] sm:w-[420px] max-h-[calc(100vh-5rem)] overflow-y-auto bg-[#0B1510] rounded-card border border-border/80 shadow-2xl p-5 space-y-4 z-50 animate-in fade-in zoom-in-95 duration-150 scrollbar-thin scrollbar-thumb-white/20">
+                {/* Header Summary (Sticky top inside dropdown - Opaque) */}
+                <div className="sticky top-0 bg-[#0B1510] -mx-5 -mt-5 p-5 pb-3 border-b border-border z-10 flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className="text-3xl p-2 rounded-2xl bg-surface border border-border">
                       {user.avatar || '🧑‍💼'}
@@ -230,7 +190,7 @@ export const Header: React.FC = () => {
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface text-text-secondary border border-border font-medium">
                           Age {user.age || 30}
                         </span>
-                        <RiskBadge category={user.riskProfile.category} size="sm" />
+                        <RiskBadge category={user.riskProfile?.category || 'moderate'} size="sm" />
                       </div>
                     </div>
                   </div>
@@ -370,20 +330,24 @@ export const Header: React.FC = () => {
 
                           {/* 3-Plan Switcher Pills */}
                           <div className="grid grid-cols-3 gap-1 bg-surface-dark/60 p-1 rounded-full border border-border">
-                            {(['conservative', 'balanced', 'growth'] as PlanType[]).map((pt) => {
-                              const isSelected = currentPlanType === pt;
+                            {[
+                              { id: 'conservative', label: 'Low Risk' },
+                              { id: 'balanced', label: 'Moderate' },
+                              { id: 'growth', label: 'High Risk' },
+                            ].map((pt) => {
+                              const isSelected = currentPlanType === pt.id;
                               return (
                                 <button
-                                  key={pt}
+                                  key={pt.id}
                                   type="button"
-                                  onClick={() => updateGoalPlan(goal.id, pt)}
-                                  className={`py-1 text-[10px] font-bold rounded-full capitalize transition-all ${
+                                  onClick={() => updateGoalPlan(goal.id, pt.id as PlanType)}
+                                  className={`py-1 text-[10px] font-bold rounded-full transition-all ${
                                     isSelected
                                       ? 'bg-brand-green text-white shadow-glow-green'
                                       : 'text-text-secondary hover:text-text-primary'
                                   }`}
                                 >
-                                  {pt}
+                                  {pt.label}
                                 </button>
                               );
                             })}
@@ -394,8 +358,8 @@ export const Header: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Logout Button at Bottom (Sticky footer inside dropdown) */}
-                <div className="sticky bottom-0 bg-surface-raised/95 backdrop-blur-md -mx-5 -mb-5 p-5 pt-3 border-t border-border z-10">
+                {/* Logout Button at Bottom (Sticky footer inside dropdown - Opaque) */}
+                <div className="sticky bottom-0 bg-[#0B1510] -mx-5 -mb-5 p-5 pt-3 border-t border-border z-10">
                   <button
                     type="button"
                     onClick={() => {
@@ -442,12 +406,6 @@ export const Header: React.FC = () => {
           </button>
         </div>
       )}
-
-      {/* Database Status & Connection Modal */}
-      <DatabaseStatusModal
-        isOpen={isDbModalOpen}
-        onClose={() => setIsDbModalOpen(false)}
-      />
     </header>
   );
 };

@@ -7,9 +7,7 @@ import { computeInflationAdjustedFV } from '../../lib/calcEngine';
 import {
   HouseColoredIcon,
   WeddingRingsColoredIcon,
-  RetirementIslandColoredIcon,
-  GraduationCapColoredIcon,
-  EmergencyLifebuoyColoredIcon,
+  CarColoredIcon,
   BullseyeTargetColoredIcon,
 } from '../common/ColoredIcon';
 import { Plus, X, Calendar, Layers } from 'lucide-react';
@@ -21,12 +19,10 @@ const GOAL_TEMPLATES: {
   defaultCost: number;
   defaultYears: number;
 }[] = [
-  { type: 'House', label: 'Dream House', icon: <HouseColoredIcon className="w-5 h-5" />, defaultCost: 8000000, defaultYears: 5 },
-  { type: 'Wedding', label: 'Wedding / Milestone', icon: <WeddingRingsColoredIcon className="w-5 h-5" />, defaultCost: 2500000, defaultYears: 3 },
-  { type: 'Retirement', label: 'Retirement Corpus', icon: <RetirementIslandColoredIcon className="w-5 h-5" />, defaultCost: 20000000, defaultYears: 15 },
-  { type: 'Education', label: 'Higher Education', icon: <GraduationCapColoredIcon className="w-5 h-5" />, defaultCost: 3500000, defaultYears: 4 },
-  { type: 'Emergency', label: 'Safety Cushion', icon: <EmergencyLifebuoyColoredIcon className="w-5 h-5" />, defaultCost: 1000000, defaultYears: 2 },
-  { type: 'Custom', label: 'Custom Milestone', icon: <BullseyeTargetColoredIcon className="w-5 h-5" />, defaultCost: 1500000, defaultYears: 3 },
+  { type: 'House', label: 'Dream Home', icon: <HouseColoredIcon className="w-5 h-5" />, defaultCost: 8000000, defaultYears: 5 },
+  { type: 'Wedding', label: 'Wedding', icon: <WeddingRingsColoredIcon className="w-5 h-5" />, defaultCost: 2500000, defaultYears: 3 },
+  { type: 'Car', label: 'Car', icon: <CarColoredIcon className="w-5 h-5" />, defaultCost: 1500000, defaultYears: 3 },
+  { type: 'Other', label: 'Other', icon: <BullseyeTargetColoredIcon className="w-5 h-5" />, defaultCost: 1000000, defaultYears: 3 },
 ];
 
 const getGoalIcon = (goalType: GoalType) => {
@@ -35,12 +31,10 @@ const getGoalIcon = (goalType: GoalType) => {
       return <HouseColoredIcon className="w-5 h-5" />;
     case 'Wedding':
       return <WeddingRingsColoredIcon className="w-5 h-5" />;
-    case 'Retirement':
-      return <RetirementIslandColoredIcon className="w-5 h-5" />;
-    case 'Education':
-      return <GraduationCapColoredIcon className="w-5 h-5" />;
-    case 'Emergency':
-      return <EmergencyLifebuoyColoredIcon className="w-5 h-5" />;
+    case 'Car':
+      return <CarColoredIcon className="w-5 h-5" />;
+    case 'Other':
+      return <BullseyeTargetColoredIcon className="w-5 h-5" />;
     default:
       return <BullseyeTargetColoredIcon className="w-5 h-5" />;
   }
@@ -180,20 +174,24 @@ export const GoalSummaryList: React.FC = () => {
                   <Layers className="w-3 h-3 text-brand-lightGreen" /> Plan Strategy:
                 </span>
                 <div className="flex items-center gap-1 bg-surface rounded-full p-0.5 border border-border">
-                  {(['conservative', 'balanced', 'growth'] as PlanType[]).map((pt) => {
-                    const isPlanActive = currentPlanType === pt;
+                  {[
+                    { id: 'conservative', label: 'Low Risk' },
+                    { id: 'balanced', label: 'Moderate Risk' },
+                    { id: 'growth', label: 'High Risk' },
+                  ].map((pt) => {
+                    const isPlanActive = currentPlanType === pt.id;
                     return (
                       <button
-                        key={pt}
+                        key={pt.id}
                         type="button"
-                        onClick={() => updateGoalPlan(goal.id, pt)}
-                        className={`px-2 py-0.5 text-[10px] font-bold rounded-full capitalize transition-all ${
+                        onClick={() => updateGoalPlan(goal.id, pt.id as PlanType)}
+                        className={`px-2.5 py-1 text-[10px] font-bold rounded-full transition-all ${
                           isPlanActive
                             ? 'bg-brand-green text-white shadow-glow-green'
                             : 'text-text-tertiary hover:text-text-primary'
                         }`}
                       >
-                        {pt}
+                        {pt.label}
                       </button>
                     );
                   })}
@@ -204,10 +202,10 @@ export const GoalSummaryList: React.FC = () => {
         })}
       </div>
 
-      {/* ADD GOAL MODAL (Triggered by "+ Add Another Goal") */}
+      {/* ADD GOAL MODAL (Section 11: Opaque backdrop and card fix to prevent glass overlap) */}
       {isAddGoalModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-lg glass-card-raised rounded-card border border-brand-green/40 p-6 sm:p-8 shadow-glass space-y-5 text-left relative animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="w-full max-w-lg bg-[#0B1510] rounded-card border border-border/80 shadow-2xl p-6 sm:p-8 space-y-5 text-left relative z-10 animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div>
                 <h3 className="text-lg font-bold text-text-primary">Add Another Financial Goal</h3>
@@ -222,12 +220,12 @@ export const GoalSummaryList: React.FC = () => {
               </button>
             </div>
 
-            {/* Template Selector Chips */}
+            {/* Template Selector Chips (4 options: Dream Home, Wedding, Car, Other) */}
             <div className="space-y-1.5">
               <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
                 Select Goal Type
               </span>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {GOAL_TEMPLATES.map((tmpl) => (
                   <button
                     key={tmpl.type}
@@ -240,8 +238,8 @@ export const GoalSummaryList: React.FC = () => {
                     }}
                     className={`p-2.5 rounded-2xl border transition-all text-left flex items-center gap-2 ${
                       newGoalType === tmpl.type
-                        ? 'glass-card-raised border-brand-green shadow-glow-green'
-                        : 'glass-card border-border hover:border-border'
+                        ? 'bg-surface border-brand-green shadow-glow-green'
+                        : 'bg-surface/60 border-border hover:border-border'
                     }`}
                   >
                     <div className="p-1 rounded-full bg-surface shrink-0">{tmpl.icon}</div>
@@ -276,8 +274,9 @@ export const GoalSummaryList: React.FC = () => {
                       required
                       min="10000"
                       step="50000"
-                      value={newGoalCost}
+                      value={newGoalCost || ''}
                       onChange={(e) => setNewGoalCost(parseFloat(e.target.value) || 0)}
+                      placeholder="0"
                       className="w-full bg-surface border border-border focus:border-brand-green rounded-full pl-8 pr-3 py-2 text-xs font-mono font-bold text-text-primary outline-none"
                     />
                   </div>

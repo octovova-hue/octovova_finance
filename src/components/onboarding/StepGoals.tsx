@@ -6,9 +6,7 @@ import { formatINR, formatYears } from '../../lib/formatters';
 import {
   HouseColoredIcon,
   WeddingRingsColoredIcon,
-  RetirementIslandColoredIcon,
-  GraduationCapColoredIcon,
-  EmergencyLifebuoyColoredIcon,
+  CarColoredIcon,
   BullseyeTargetColoredIcon,
 } from '../common/ColoredIcon';
 import {
@@ -25,57 +23,44 @@ interface StepGoalsProps {
   onPrev: () => void;
 }
 
+// Section 5: Goal Type options: Dream Home, Wedding, Car, Other
 const AVAILABLE_GOAL_TEMPLATES: {
   type: GoalType;
   label: string;
   icon: React.ReactNode;
-  defaultCost: number;
   defaultYears: number;
 }[] = [
-  { type: 'House', label: 'Dream House', icon: <HouseColoredIcon className="w-5 h-5" />, defaultCost: 8000000, defaultYears: 5 },
-  { type: 'Wedding', label: 'Wedding / Milestone', icon: <WeddingRingsColoredIcon className="w-5 h-5" />, defaultCost: 2500000, defaultYears: 3 },
-  { type: 'Retirement', label: 'Retirement Corpus', icon: <RetirementIslandColoredIcon className="w-5 h-5" />, defaultCost: 20000000, defaultYears: 15 },
-  { type: 'Education', label: 'Higher Education', icon: <GraduationCapColoredIcon className="w-5 h-5" />, defaultCost: 3500000, defaultYears: 4 },
-  { type: 'Emergency', label: 'Safety Cushion', icon: <EmergencyLifebuoyColoredIcon className="w-5 h-5" />, defaultCost: 1000000, defaultYears: 2 },
-  { type: 'Custom', label: 'Custom Milestone', icon: <BullseyeTargetColoredIcon className="w-5 h-5" />, defaultCost: 1500000, defaultYears: 3 },
+  { type: 'House', label: 'Dream Home', icon: <HouseColoredIcon className="w-5 h-5" />, defaultYears: 5 },
+  { type: 'Wedding', label: 'Wedding', icon: <WeddingRingsColoredIcon className="w-5 h-5" />, defaultYears: 3 },
+  { type: 'Car', label: 'Car', icon: <CarColoredIcon className="w-5 h-5" />, defaultYears: 3 },
+  { type: 'Other', label: 'Other', icon: <BullseyeTargetColoredIcon className="w-5 h-5" />, defaultYears: 4 },
 ];
 
 export const StepGoals: React.FC<StepGoalsProps> = ({ onNext, onPrev }) => {
   const { user, updateUser, assumptions } = useFinance();
   const currentYear = 2026;
 
+  // Section 5: No goal type is pre-selected by default — user must actively choose
   const [goals, setGoals] = useState<GoalItem[]>(
-    user.goals.length > 0
+    user.goals.length > 0 && user.goals.some(g => (g.todayCost || 0) > 0)
       ? user.goals
-      : [
-          {
-            id: 'g_1',
-            name: 'Dream House',
-            goalType: 'House',
-            targetYear: 2031,
-            todayCost: 8000000,
-            priority: 5,
-            allocatedAssets: 200000,
-            activePlanType: 'balanced',
-            createdAt: Date.now(),
-          },
-        ]
+      : []
   );
 
-  // SECTION 9: Multi-select add goal template
+  // Add goal template with empty (0) amount
   const handleAddGoalFromType = (template: typeof AVAILABLE_GOAL_TEMPLATES[0]) => {
     const newGoal: GoalItem = {
       id: `g_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
       name: template.label,
       goalType: template.type,
       targetYear: currentYear + template.defaultYears,
-      todayCost: template.defaultCost,
+      todayCost: 0,
       priority: 4,
       allocatedAssets: 0,
       activePlanType: 'balanced',
       createdAt: Date.now(),
     };
-    setGoals(prev => [newGoal, ...prev]);
+    setGoals(prev => [...prev, newGoal]);
   };
 
   const handleRemove = (id: string) => {
@@ -100,17 +85,19 @@ export const StepGoals: React.FC<StepGoalsProps> = ({ onNext, onPrev }) => {
     onNext();
   };
 
+  const isFormValid = goals.length > 0 && goals.every(g => (g.todayCost || 0) > 0);
+
   return (
     <div className="w-full max-w-xl mx-auto space-y-6 animate-in fade-in duration-300">
       <div className="text-left">
         <h2 className="text-2xl sm:text-3xl font-bold text-text-primary">What are your primary goals?</h2>
         <p className="text-xs text-text-secondary mt-1">
-          Select all milestones that apply, customize each goal's name and cost.
+          Choose your milestones below, then enter your expected cost and target timeline.
         </p>
       </div>
 
-      {/* SECTION 9: Multi-Select Goal Type Chips */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+      {/* Goal Type Selection Chips (Section 5: 4 options: Dream Home, Wedding, Car, Other) */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
         {AVAILABLE_GOAL_TEMPLATES.map((gt) => {
           const isSelected = goals.some(g => g.goalType === gt.type);
 
@@ -131,7 +118,6 @@ export const StepGoals: React.FC<StepGoalsProps> = ({ onNext, onPrev }) => {
                 </div>
                 <div className="min-w-0 truncate">
                   <span className="text-xs font-bold text-text-primary block truncate">{gt.label}</span>
-                  <span className="text-[10px] text-text-tertiary">~{formatINR(gt.defaultCost, true)}</span>
                 </div>
               </div>
               <Plus className="w-3.5 h-3.5 text-brand-lightGreen shrink-0 group-hover:scale-125 transition-transform" />
@@ -140,7 +126,18 @@ export const StepGoals: React.FC<StepGoalsProps> = ({ onNext, onPrev }) => {
         })}
       </div>
 
-      {/* Active Goal Cards with EDITABLE NAME FIELD per Section 9 */}
+      {/* Empty State Prompt if No Goal Chosen Yet */}
+      {goals.length === 0 && (
+        <div className="p-8 rounded-card border-2 border-dashed border-border/70 text-center space-y-2 bg-surface/30 animate-in fade-in">
+          <BullseyeTargetColoredIcon className="w-8 h-8 mx-auto opacity-70" />
+          <p className="text-sm font-bold text-text-primary">No goal selected yet</p>
+          <p className="text-xs text-text-secondary max-w-sm mx-auto">
+            Click on <strong>Dream Home</strong>, <strong>Wedding</strong>, <strong>Car</strong>, or <strong>Other</strong> above to add your milestone.
+          </p>
+        </div>
+      )}
+
+      {/* Active Goal Cards with 0 placeholder */}
       <div className="space-y-4">
         {goals.map((goal, idx) => {
           const years = Math.max(1, goal.targetYear - currentYear);
@@ -189,9 +186,10 @@ export const StepGoals: React.FC<StepGoalsProps> = ({ onNext, onPrev }) => {
                     <input
                       type="number"
                       step="50000"
-                      min="10000"
-                      value={goal.todayCost || ''}
+                      min="0"
+                      value={goal.todayCost === 0 ? '' : goal.todayCost}
                       onChange={(e) => handleUpdate(goal.id, 'todayCost', parseFloat(e.target.value) || 0)}
+                      placeholder="0"
                       className="w-full bg-surface border border-border focus:border-brand-green rounded-full pl-8 pr-4 py-2 text-xs font-mono font-bold text-text-primary outline-none"
                     />
                   </div>
@@ -271,8 +269,8 @@ export const StepGoals: React.FC<StepGoalsProps> = ({ onNext, onPrev }) => {
         <button
           type="button"
           onClick={handleContinue}
-          disabled={goals.length === 0}
-          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-brand-green hover:bg-brand-darkGreen disabled:opacity-40 text-white font-bold text-xs uppercase tracking-wider shadow-glow-green transition-all transform hover:scale-105"
+          disabled={!isFormValid}
+          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-brand-green hover:bg-brand-darkGreen disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs uppercase tracking-wider shadow-glow-green transition-all transform hover:scale-105"
         >
           Know Your Plan <ArrowRight className="w-4 h-4" />
         </button>

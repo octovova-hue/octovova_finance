@@ -221,14 +221,14 @@ export function generatePlans(
     {
       planId: 'plan_conservative',
       type: 'conservative',
-      name: 'Steady Foundation Plan',
+      name: 'Low Risk Plan',
       allocation: allocConservative,
       expectedCagr: cagrConservative,
       monthlyInvestmentRequired: sipConservative,
       targetGoalFutureValue: targetFV,
       timelineYears: years,
       narrative: {
-        name: 'Steady Foundation',
+        name: 'Low Risk Plan',
         explanation: `Prioritizes capital safety with a ${allocConservative.debt}% debt cushion. Requires ₹${sipConservative.toLocaleString('en-IN')}/month to target your ${primaryGoal.name} goal by ${primaryGoal.targetYear}.`,
         riskNote: isShortHorizon 
           ? 'Short timeline (<3 yrs) keeps equity capped to prevent downside drawdowns before withdrawal.'
@@ -238,29 +238,29 @@ export function generatePlans(
     {
       planId: 'plan_balanced',
       type: 'balanced',
-      name: 'Balanced Growth Plan',
+      name: 'Moderate Risk Plan',
       allocation: allocBalanced,
       expectedCagr: cagrBalanced,
       monthlyInvestmentRequired: sipBalanced,
       targetGoalFutureValue: targetFV,
       timelineYears: years,
       narrative: {
-        name: 'Balanced Growth',
-        explanation: `Matches a balanced wealth-building profile. With ${allocBalanced.equity}% equity and ${allocBalanced.debt}% debt, a monthly SIP of ₹${sipBalanced.toLocaleString('en-IN')} stays on course for your target.`,
+        name: 'Moderate Risk Plan',
+        explanation: `Matches a balanced wealth-building profile. With ${allocBalanced.equity}% equity and ${allocBalanced.debt}% debt, a monthly investment of ₹${sipBalanced.toLocaleString('en-IN')} stays on course for your target.`,
         riskNote: 'Moderate market sensitivity; built to comfortably ride out standard economic cycles.'
       }
     },
     {
       planId: 'plan_growth',
       type: 'growth',
-      name: 'Accelerated Compounding Plan',
+      name: 'High Risk Plan',
       allocation: allocGrowth,
       expectedCagr: cagrGrowth,
       monthlyInvestmentRequired: sipGrowth,
       targetGoalFutureValue: targetFV,
       timelineYears: years,
       narrative: {
-        name: 'Accelerated Compounding',
+        name: 'High Risk Plan',
         explanation: `Maximizes long-range equity compounding (${allocGrowth.equity}% equity). Lowers the required monthly contribution to ₹${sipGrowth.toLocaleString('en-IN')}/month.`,
         riskNote: 'High equity exposure with potential 15-20% corrections; best suited for disciplined long-term horizons.'
       }

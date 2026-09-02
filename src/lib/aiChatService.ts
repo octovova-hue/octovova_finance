@@ -123,7 +123,7 @@ export async function sendAIMessage(
   // Built-in Contextual Financial Intelligence Engine (Zero latency, 100% reliable)
   await new Promise(resolve => setTimeout(resolve, 600));
 
-  const planName = activePlan?.name || 'Balanced Growth Plan';
+  const planName = activePlan?.name || 'Moderate Risk Plan';
   const equityPct = activePlan?.allocation.equity || 55;
   const debtPct = activePlan?.allocation.debt || 40;
   const cashPct = activePlan?.allocation.cash || 5;
@@ -197,20 +197,20 @@ You have sufficient liquidity to absorb unforeseen medical or career disruptions
 • **Why pure Fixed Deposits fail**: A 6.5% FD after 30% income tax yields only ~4.55% net, causing real negative wealth erosion (-1.45%/yr). This is why your plan includes **${equityPct}% equity** to generate positive real returns above inflation.`;
   }
 
-  // Topic 6: Comparing Plan Types (Conservative vs Growth)
-  if (query.includes('compare') || query.includes('conservative') || query.includes('growth')) {
+  // Topic 6: Comparing Plan Types (Low Risk vs High Risk)
+  if (query.includes('compare') || query.includes('conservative') || query.includes('growth') || query.includes('risk')) {
     return `Here is how the three strategies compare for your profile:
 
-1. **Conservative Plan (25% Equity / 65% Debt)**:
+1. **Low Risk Plan (25% Equity / 65% Debt)**:
    • Lower volatility, maximum capital preservation.
-   • Requires a higher monthly SIP because expected CAGR is lower (~7.2%).
+   • Requires a higher monthly contribution because expected CAGR is lower (~7.2%).
 
-2. **Balanced Plan (55% Equity / 40% Debt - Recommended)**:
+2. **Moderate Risk Plan (55% Equity / 40% Debt - Recommended)**:
    • Optimal blend matching your ${user.riskProfile.category} risk score.
    • Balances growth with downside protection at **${sipAmt}/month**.
 
-3. **Growth Plan (80% Equity / 17% Debt)**:
-   • Lowers the required monthly SIP through aggressive equity compounding (~10.2% CAGR).
+3. **High Risk Plan (80% Equity / 17% Debt)**:
+   • Lowers the required monthly contribution through aggressive equity compounding (~10.2% CAGR).
    • Expect short-term portfolio drawdowns of 15–20% during market corrections.`;
   }
 

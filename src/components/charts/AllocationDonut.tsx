@@ -14,14 +14,14 @@ interface AllocationDonutProps {
 const COLORS = {
   equity: '#10B981', // Emerald Green
   debt: '#34D399',   // Mint Green
-  cash: '#64748B',   // Slate Gray
+  cash: '#94A3B8',   // Slate Gray
 };
 
 export const AllocationDonut: React.FC<AllocationDonutProps> = ({
   allocation,
-  size = 180,
-  innerRadius = 52,
-  outerRadius = 75,
+  size = 130,
+  innerRadius = 38,
+  outerRadius = 54,
   showLegend = true,
   className = '',
 }) => {
@@ -29,7 +29,7 @@ export const AllocationDonut: React.FC<AllocationDonutProps> = ({
     { name: 'Equity', value: allocation.equity, color: COLORS.equity },
     { name: 'Debt', value: allocation.debt, color: COLORS.debt },
     { name: 'Cash', value: allocation.cash, color: COLORS.cash },
-  ].filter(d => d.value > 0);
+  ].filter((d) => d.value > 0);
 
   return (
     <div className={`flex flex-col items-center justify-center ${className}`}>
@@ -41,8 +41,8 @@ export const AllocationDonut: React.FC<AllocationDonutProps> = ({
                 if (active && payload && payload.length) {
                   const item = payload[0];
                   return (
-                    <div className="rounded-full glass-card-raised px-3.5 py-1.5 text-xs font-semibold shadow-glass border border-border">
-                      <span className="text-text-primary">{item.name}: </span>
+                    <div className="rounded-lg bg-[#0C1410] px-3 py-1.5 text-xs font-semibold shadow-card border border-white/10">
+                      <span className="text-text-secondary">{item.name}: </span>
                       <span className="font-mono text-brand-lightGreen">{item.value}%</span>
                     </div>
                   );
@@ -66,27 +66,37 @@ export const AllocationDonut: React.FC<AllocationDonutProps> = ({
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-        
+
         {/* Center label */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-[10px] uppercase font-bold text-text-tertiary tracking-wider">Equity</span>
-          <span className="text-lg font-mono font-extrabold text-brand-lightGreen">{allocation.equity}%</span>
+          <span className="text-[9px] uppercase font-mono font-bold text-text-tertiary tracking-wider">
+            Equity
+          </span>
+          <span className="text-base font-mono font-extrabold text-brand-lightGreen">
+            {allocation.equity}%
+          </span>
         </div>
       </div>
 
       {showLegend && (
-        <div className="flex items-center justify-center gap-4 mt-3 text-xs">
+        <div className="flex items-center justify-center gap-4 mt-3 text-xs font-mono">
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-brand-green" />
-            <span className="text-text-secondary">Equity <strong className="text-text-primary font-mono">{allocation.equity}%</strong></span>
+            <div className="w-2 h-2 rounded-full bg-brand-green" />
+            <span className="text-text-secondary">
+              Equity <strong className="text-text-primary">{allocation.equity}%</strong>
+            </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-brand-mint" />
-            <span className="text-text-secondary">Debt <strong className="text-text-primary font-mono">{allocation.debt}%</strong></span>
+            <div className="w-2 h-2 rounded-full bg-brand-mint" />
+            <span className="text-text-secondary">
+              Debt <strong className="text-text-primary">{allocation.debt}%</strong>
+            </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-text-secondary" />
-            <span className="text-text-secondary">Cash <strong className="text-text-primary font-mono">{allocation.cash}%</strong></span>
+            <div className="w-2 h-2 rounded-full bg-slate-400" />
+            <span className="text-text-secondary">
+              Cash <strong className="text-text-primary">{allocation.cash}%</strong>
+            </span>
           </div>
         </div>
       )}

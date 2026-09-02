@@ -221,48 +221,48 @@ export function generatePlans(
     {
       planId: 'plan_conservative',
       type: 'conservative',
-      name: 'Low Risk Plan',
+      name: 'Conservative',
       allocation: allocConservative,
       expectedCagr: cagrConservative,
       monthlyInvestmentRequired: sipConservative,
       targetGoalFutureValue: targetFV,
       timelineYears: years,
       narrative: {
-        name: 'Low Risk Plan',
-        explanation: `Prioritizes capital safety with a ${allocConservative.debt}% debt cushion. Requires ₹${sipConservative.toLocaleString('en-IN')}/month to target your ${primaryGoal.name} goal by ${primaryGoal.targetYear}.`,
+        name: 'Conservative',
+        explanation: `Preserves capital with ${allocConservative.debt}% debt cushion. Steady, predictable accumulation for capital security.`,
         riskNote: isShortHorizon 
-          ? 'Short timeline (<3 yrs) keeps equity capped to prevent downside drawdowns before withdrawal.'
-          : 'Low drawdown risk; yields steady, predictable accumulation over time.'
+          ? 'Short timeline (<3 yrs) keeps equity capped to protect against near-term drawdowns.'
+          : 'Minimal downside volatility; built for capital preservation and steady cash-flow predictability.'
       }
     },
     {
       planId: 'plan_balanced',
       type: 'balanced',
-      name: 'Moderate Risk Plan',
+      name: 'Balanced',
       allocation: allocBalanced,
       expectedCagr: cagrBalanced,
       monthlyInvestmentRequired: sipBalanced,
       targetGoalFutureValue: targetFV,
       timelineYears: years,
       narrative: {
-        name: 'Moderate Risk Plan',
-        explanation: `Matches a balanced wealth-building profile. With ${allocBalanced.equity}% equity and ${allocBalanced.debt}% debt, a monthly investment of ₹${sipBalanced.toLocaleString('en-IN')} stays on course for your target.`,
-        riskNote: 'Moderate market sensitivity; built to comfortably ride out standard economic cycles.'
+        name: 'Balanced',
+        explanation: `Optimizes equity growth (${allocBalanced.equity}%) while retaining a ${allocBalanced.debt}% defensive anchor against market cycles.`,
+        riskNote: 'Moderate market sensitivity; engineered to generate wealth while damping sharp drawdowns.'
       }
     },
     {
       planId: 'plan_growth',
       type: 'growth',
-      name: 'High Risk Plan',
+      name: 'Growth',
       allocation: allocGrowth,
       expectedCagr: cagrGrowth,
       monthlyInvestmentRequired: sipGrowth,
       targetGoalFutureValue: targetFV,
       timelineYears: years,
       narrative: {
-        name: 'High Risk Plan',
-        explanation: `Maximizes long-range equity compounding (${allocGrowth.equity}% equity). Lowers the required monthly contribution to ₹${sipGrowth.toLocaleString('en-IN')}/month.`,
-        riskNote: 'High equity exposure with potential 15-20% corrections; best suited for disciplined long-term horizons.'
+        name: 'Growth',
+        explanation: `Maximizes long-term compounding with ${allocGrowth.equity}% equity exposure. Reduces monthly required SIP by up to 25%.`,
+        riskNote: 'Higher cyclical volatility; ideal for wealth generation over 5+ year horizons.'
       }
     }
   ];

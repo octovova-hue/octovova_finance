@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { useFinance } from '../../context/FinanceContext';
 import { AnimatedNumber } from '../common/AnimatedNumber';
-import { RiskBadge } from '../common/Badge';
 import { CashFlowSparkline } from '../charts/CashFlowSparkline';
 import { SpeedometerGauge } from '../common/SpeedometerGauge';
 import {
   AlertTriangle,
   X,
   Maximize2,
+  TrendingUp,
+  ShieldAlert,
+  ArrowUpRight,
+  ArrowDownRight,
+  Wallet,
 } from 'lucide-react';
 import { formatINR } from '../../lib/formatters';
 
@@ -17,90 +21,135 @@ export const DashboardHero: React.FC = () => {
   const [showFullRiskModal, setShowFullRiskModal] = useState<boolean>(false);
 
   return (
-    <div className="space-y-5 animate-in fade-in duration-300">
-      {/* Warning Banner if Emergency Fund is Inadequate */}
+    <div className="space-y-4 animate-in fade-in duration-300">
+      {/* Emergency Fund Notice */}
       {!financials.isEmergencyFundAdequate && showWarning && (
-        <div className="p-4 rounded-card bg-warning/10 border border-warning/30 flex items-start justify-between gap-3 text-xs text-text-primary animate-in slide-in-from-top duration-300">
+        <div className="p-3.5 sm:p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start justify-between gap-3 text-xs text-text-primary">
           <div className="flex items-start gap-2.5">
-            <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
+            <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <strong className="text-warning block">Emergency Reserve Recommendation</strong>
-              <span>
-                Your current liquid reserves cover {financials.emergencyFundMonthsCovered} of the recommended {assumptions.emergencyBufferMonths} months of expenses.
+              <strong className="text-amber-300 block font-semibold">
+                Emergency Reserve Recommendation
+              </strong>
+              <span className="text-text-secondary">
+                Your liquid reserves cover {financials.emergencyFundMonthsCovered} of the recommended{' '}
+                {assumptions.emergencyBufferMonths} months of expenses. Consider allocating liquid surplus before aggressive risk assets.
               </span>
             </div>
           </div>
           <button
             type="button"
             onClick={() => setShowWarning(false)}
-            className="p-1 text-text-tertiary hover:text-text-primary rounded-full"
+            className="p-1 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-white/5 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* Main Hero Grid */}
+      {/* Hero Metrics Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* SECTION 1: HERO-CARD VARIANT (Brighter mint-to-white gradient glass surface, dark text on top) */}
-        <div className="lg:col-span-2 rounded-card glass-hero-card p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between">
-          <div className="flex items-start justify-between">
-            <div>
+        {/* Main Net Worth & Cash Flow Card (Cohesive Dark Fintech Card) */}
+        <div className="lg:col-span-2 rounded-2xl bg-[#0D1612] border border-white/8 p-6 sm:p-7 flex flex-col justify-between shadow-card relative overflow-hidden">
+          {/* Subtle Ambient Sheen */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-brand-green/5 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="space-y-4 relative z-10">
+            {/* Top Row: Label & User Risk Badge */}
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-xs uppercase font-extrabold tracking-wider text-emerald-900/80">
-                  Total Net Worth
+                <div className="p-1.5 rounded-lg bg-brand-green/10 text-brand-lightGreen">
+                  <Wallet className="w-4 h-4" />
+                </div>
+                <span className="text-xs uppercase font-bold tracking-wider text-text-secondary">
+                  Total Financial Net Worth
                 </span>
               </div>
-              <div className="mt-2 flex items-baseline gap-3">
-                <AnimatedNumber
-                  value={financials.netWorth}
-                  currency="INR"
-                  className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight ${
-                    financials.isNetWorthNegative ? 'text-red-600' : 'text-emerald-950'
-                  }`}
-                />
-              </div>
-              <p className="text-xs text-emerald-900/70 font-medium mt-1">
-                Assets: <span className="font-mono text-emerald-800 font-bold">{formatINR(financials.totalAssets)}</span> | 
-                Debts: <span className="font-mono text-red-700 font-bold">{formatINR(financials.totalLiabilities)}</span>
-              </p>
+              <span className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-brand-green/15 text-brand-lightGreen border border-brand-green/30">
+                {user.riskProfile.category} Profile
+              </span>
             </div>
 
-            <div className="flex flex-col items-end gap-2">
-              <RiskBadge category={user.riskProfile.category} size="md" />
+            {/* Net Worth Large Metric */}
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
+              <AnimatedNumber
+                value={financials.netWorth}
+                currency="INR"
+                className={`text-3xl sm:text-4xl lg:text-5xl font-mono font-extrabold tracking-tight ${
+                  financials.isNetWorthNegative ? 'text-danger' : 'text-text-primary'
+                }`}
+              />
+              <span className="text-xs text-text-tertiary font-mono">
+                Across {user.assets.length} asset classes & {user.liabilities.length} debt items
+              </span>
+            </div>
+
+            {/* Assets & Debts Breakdown Chips */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+              <div className="p-3 rounded-xl bg-white/[0.02] border border-white/6">
+                <span className="text-[10px] uppercase font-bold text-text-tertiary flex items-center gap-1">
+                  <ArrowUpRight className="w-3 h-3 text-brand-lightGreen" /> Total Assets
+                </span>
+                <span className="font-mono font-bold text-text-primary text-sm sm:text-base mt-0.5 block">
+                  {formatINR(financials.totalAssets)}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-white/[0.02] border border-white/6">
+                <span className="text-[10px] uppercase font-bold text-text-tertiary flex items-center gap-1">
+                  <ArrowDownRight className="w-3 h-3 text-danger" /> Total Liabilities
+                </span>
+                <span className="font-mono font-bold text-danger text-sm sm:text-base mt-0.5 block">
+                  {formatINR(financials.totalLiabilities)}
+                </span>
+              </div>
+
+              <div className="col-span-2 sm:col-span-1 p-3 rounded-xl bg-white/[0.02] border border-white/6">
+                <span className="text-[10px] uppercase font-bold text-text-tertiary flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3 text-brand-mint" /> Liquid Cushion
+                </span>
+                <span className="font-mono font-bold text-brand-mint text-sm sm:text-base mt-0.5 block">
+                  {formatINR(financials.liquidAssetsAvailable)}
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Cash Flow Sparkline */}
-          <div className="mt-6 pt-4 border-t border-emerald-900/10">
-            <div className="flex items-center justify-between text-xs mb-1">
-              <span className="text-emerald-900/80 font-bold">Monthly Cash Flow Trajectory</span>
-              <span className={`font-mono font-extrabold ${financials.isCashFlowNegative ? 'text-red-700' : 'text-emerald-900'}`}>
-                {financials.monthlyCashFlow >= 0 ? '+' : ''}{formatINR(financials.monthlyCashFlow)}/mo
+          {/* Monthly Cash Flow Trajectory Strip */}
+          <div className="mt-5 pt-4 border-t border-white/6 relative z-10">
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="text-text-secondary font-medium">Monthly Cash Flow Trajectory</span>
+              <span
+                className={`font-mono font-bold ${
+                  financials.isCashFlowNegative ? 'text-danger' : 'text-brand-lightGreen'
+                }`}
+              >
+                {financials.monthlyCashFlow >= 0 ? '+' : ''}
+                {formatINR(financials.monthlyCashFlow)}/mo
               </span>
             </div>
-            <CashFlowSparkline cashFlow={financials.monthlyCashFlow} height={42} />
+            <CashFlowSparkline cashFlow={financials.monthlyCashFlow} height={36} />
           </div>
         </div>
 
-        {/* COMPACT SPEEDOMETER GAUGE CARD (Darker Glass style) */}
-        <div className="rounded-card glass-card p-6 border border-border flex flex-col justify-between items-center text-center shadow-glass space-y-3 relative group">
+        {/* Connected Risk Profile Card */}
+        <div className="rounded-2xl bg-[#0D1612] border border-white/8 p-6 flex flex-col justify-between items-center text-center shadow-card relative group">
           <div className="w-full flex items-center justify-between">
-            <span className="text-xs uppercase font-bold text-text-secondary tracking-wider block">
+            <span className="text-xs uppercase font-bold text-text-secondary tracking-wider">
               Risk Profile & Health
             </span>
             <button
               type="button"
               onClick={() => setShowFullRiskModal(true)}
-              className="p-1 text-text-tertiary hover:text-brand-lightGreen rounded-full hover:bg-surface-raised transition-colors"
-              title="Expand Full Risk Gauge"
+              className="p-1 text-text-tertiary hover:text-brand-lightGreen rounded-lg hover:bg-white/5 transition-colors"
+              title="Expand full risk architecture"
             >
               <Maximize2 className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* COMPACT SPEEDOMETER GAUGE */}
-          <div className="py-1">
+          {/* Speedometer Gauge */}
+          <div className="py-2">
             <SpeedometerGauge
               score={user.riskProfile.score}
               category={user.riskProfile.category}
@@ -109,35 +158,40 @@ export const DashboardHero: React.FC = () => {
             />
           </div>
 
-          <div className="w-full pt-2 border-t border-border/40 text-center">
+          <div className="w-full pt-3 border-t border-white/6 flex items-center justify-between text-xs">
+            <span className="text-text-tertiary">Score: <strong className="text-text-primary font-mono">{user.riskProfile.score}/25</strong></span>
             <button
               type="button"
               onClick={() => setShowFullRiskModal(true)}
-              className="text-xs text-brand-lightGreen hover:underline font-semibold"
+              className="text-brand-lightGreen hover:underline font-semibold"
             >
-              View Risk Breakdown →
+              Risk Breakdown →
             </button>
           </div>
         </div>
       </div>
 
-      {/* FULL-DETAIL RISK PROFILE MODAL (Reachable by tapping dashboard gauge card) */}
+      {/* Full-Detail Risk Profile Modal */}
       {showFullRiskModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-lg bg-[#0B1510] rounded-card border border-border/80 p-6 sm:p-8 shadow-2xl space-y-5 text-center relative z-10 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
+            onClick={() => setShowFullRiskModal(false)}
+          />
+
+          <div className="w-full max-w-lg bg-[#0C1410] rounded-2xl border border-white/10 p-6 sm:p-8 shadow-modal space-y-5 text-center relative z-10 animate-modal-enter">
             <button
               type="button"
               onClick={() => setShowFullRiskModal(false)}
-              className="absolute top-4 right-4 p-1.5 text-text-tertiary hover:text-text-primary rounded-full hover:bg-surface"
+              className="absolute top-4 right-4 p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-white/5 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <span className="text-xs uppercase font-bold text-text-secondary tracking-widest block">
-              Risk Profile Architecture
+            <span className="text-xs uppercase font-mono font-bold text-brand-lightGreen tracking-widest block">
+              Risk Architecture
             </span>
 
-            {/* FULL-SIZE SPEEDOMETER GAUGE */}
             <div className="py-2 flex justify-center">
               <SpeedometerGauge
                 score={user.riskProfile.score}
@@ -151,7 +205,7 @@ export const DashboardHero: React.FC = () => {
             </p>
 
             {/* Target Allocations Grid */}
-            <div className="p-4 rounded-2xl glass-card border border-border grid grid-cols-3 gap-2 text-center text-xs">
+            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/8 grid grid-cols-3 gap-2 text-center text-xs">
               <div>
                 <span className="text-text-tertiary block text-[10px] uppercase font-bold">Recommended Equity</span>
                 <strong className="text-brand-lightGreen font-mono text-sm">
@@ -184,7 +238,7 @@ export const DashboardHero: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowFullRiskModal(false)}
-                className="px-6 py-2.5 rounded-full bg-brand-green hover:bg-brand-darkGreen text-white text-xs font-bold uppercase tracking-wider shadow-glow-green"
+                className="px-6 py-2.5 rounded-xl bg-brand-green hover:bg-brand-darkGreen text-white text-xs font-bold uppercase tracking-wider shadow-glow-green"
               >
                 Close
               </button>

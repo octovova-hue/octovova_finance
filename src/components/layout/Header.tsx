@@ -26,6 +26,8 @@ import {
   X,
   Target,
   Layers,
+  Bell,
+  Sparkles,
 } from 'lucide-react';
 
 const PRESET_AVATARS = ['🧑‍💼', '👩‍💻', '👨‍🚀', '👩‍⚕️', '🧙‍♂️', '🦁', '💎', '🚀', '📈'];
@@ -43,7 +45,9 @@ export const Header: React.FC = () => {
   } = useFinance();
 
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
 
   // Section 4: User Profile Editing Fields in dropdown
   const [editName, setEditName] = useState<string>(user.name || '');
@@ -63,6 +67,9 @@ export const Header: React.FC = () => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setIsProfileOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setIsNotificationsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -97,9 +104,9 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-xl border-b border-border transition-all">
+    <header className="sticky top-0 z-40 w-full bg-[#080E0C]/90 backdrop-blur-xl border-b border-white/8 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        {/* Brand Logo with Circular Green Bar-Chart Icon */}
+        {/* Brand Logo */}
         <div
           className="flex items-center gap-2.5 cursor-pointer select-none"
           onClick={() => setActiveTab('dashboard')}
@@ -112,15 +119,15 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Navigation Tabs (3 items: Dashboard · Plans · AI Advisor) with SVGREPO Colored Icons */}
+        {/* Navigation Tabs (3 items: Dashboard · Plans · AI Advisor) with Linear-inspired Pill Design */}
         {isOnboarded && (
-          <nav className="hidden md:flex items-center gap-1 bg-surface rounded-full p-1 border border-border">
+          <nav className="hidden md:flex items-center gap-1 bg-surface-dark rounded-xl p-1 border border-white/8">
             <button
               onClick={() => setActiveTab('dashboard')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 activeTab === 'dashboard'
-                  ? 'bg-brand-green text-white shadow-glow-green'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
+                  ? 'bg-brand-green text-white shadow-glow-green font-bold'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
               }`}
             >
               <DashboardNavColoredIcon className="w-3.5 h-3.5" /> Dashboard
@@ -128,21 +135,21 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setActiveTab('plans')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 activeTab === 'plans'
-                  ? 'bg-brand-green text-white shadow-glow-green'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
+                  ? 'bg-brand-green text-white shadow-glow-green font-bold'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
               }`}
             >
-              <PlansNavColoredIcon className="w-3.5 h-3.5" /> Plans
+              <PlansNavColoredIcon className="w-3.5 h-3.5" /> Strategy & Plans
             </button>
 
             <button
               onClick={() => setActiveTab('assistant')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 activeTab === 'assistant'
-                  ? 'bg-gradient-green text-white shadow-glow-green'
-                  : 'text-brand-lightGreen hover:bg-surface-hover'
+                  ? 'bg-gradient-green text-white shadow-glow-green font-bold'
+                  : 'text-brand-lightGreen hover:bg-white/5'
               }`}
             >
               <RobotAdvisorColoredIcon className="w-3.5 h-3.5" /> AI Advisor
@@ -150,13 +157,71 @@ export const Header: React.FC = () => {
           </nav>
         )}
 
-        {/* Right Tools & Profile (Net worth, DB button, and refresh button removed per Section 6) */}
+        {/* Right Tools & Profile */}
         <div className="flex items-center gap-2 sm:gap-3 relative">
-          {/* SECTION 4: PROFILE & SETTINGS MENU */}
+          {/* Notifications Trigger */}
+          {isOnboarded && (
+            <div className="relative" ref={notifRef}>
+              <button
+                type="button"
+                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                className="p-2 rounded-xl bg-surface-dark hover:bg-white/5 border border-white/8 hover:border-white/15 text-text-secondary hover:text-text-primary transition-all relative"
+                aria-label="View notifications"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="w-2 h-2 rounded-full bg-brand-green absolute top-1.5 right-1.5 shadow-glow-green" />
+              </button>
+
+              {/* Notifications Popover */}
+              {isNotificationsOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-[#0C1410] rounded-2xl border border-white/10 shadow-modal p-4 space-y-3 z-50 animate-modal-enter text-left">
+                  <div className="flex items-center justify-between border-b border-white/8 pb-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-text-primary">
+                      Fintech Intelligence
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-brand-green/15 text-brand-lightGreen">
+                      3 New
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs">
+                    <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                      <span className="font-semibold text-text-primary flex items-center gap-1.5 text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-brand-green" /> Allocation Rebalance
+                      </span>
+                      <p className="text-[11px] text-text-secondary leading-relaxed">
+                        Your <strong>{user.goals[0]?.name || 'Primary Goal'}</strong> timeline aligns with 55% Equity exposure.
+                      </p>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                      <span className="font-semibold text-text-primary flex items-center gap-1.5 text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-brand-mint" /> Emergency Cushion
+                      </span>
+                      <p className="text-[11px] text-text-secondary leading-relaxed">
+                        Liquid reserves are healthy at ~4.2 months. Next review in 60 days.
+                      </p>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                      <span className="font-semibold text-text-primary flex items-center gap-1.5 text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Inflation Rate (6.0%)
+                      </span>
+                      <p className="text-[11px] text-text-secondary leading-relaxed">
+                        All future value forecasts calculate with compound 6% annual inflation.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Profile Menu */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface hover:bg-surface-hover border border-border hover:border-brand-green transition-all text-left"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-dark hover:bg-white/5 border border-white/8 hover:border-brand-green/50 transition-all text-left"
               title="Profile & Plan Settings"
             >
               <span className="text-base leading-none select-none">{user.avatar || '🧑‍💼'}</span>

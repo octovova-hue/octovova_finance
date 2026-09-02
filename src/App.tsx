@@ -21,6 +21,7 @@ import { DashboardHero } from './components/dashboard/DashboardHero';
 import { GoalSummaryList } from './components/dashboard/GoalSummaryList';
 import { PlanCard } from './components/plans/PlanCard';
 import { PlanCompareView } from './components/plans/PlanCompareView';
+import { StrategyRecommendationBanner } from './components/plans/StrategyRecommendationBanner';
 import { AIAssistant } from './components/ai/AIAssistant';
 import { FloatingAICopilot } from './components/ai/FloatingAICopilot';
 
@@ -37,6 +38,8 @@ export const App: React.FC = () => {
     plans,
     activePlan,
     selectPlan,
+    user,
+    selectedGoal,
   } = useFinance();
 
   const [selectedPlanForModal, setSelectedPlanForModal] = useState<FinancialPlan | null>(null);
@@ -97,31 +100,45 @@ export const App: React.FC = () => {
                 {/* Goals Progress (Sorted Newest First, + Add Another Goal) */}
                 <GoalSummaryList />
 
-                {/* Active Plan Recommendation Strip (Single Entry Point per Section 10) */}
-                <div className="rounded-card glass-card p-6 border border-border space-y-4 shadow-glass">
+                {/* Active Plan Recommendation & Strategy Comparison Strip */}
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-xs uppercase font-bold text-brand-lightGreen tracking-wider">
-                        Active Financial Plan
-                      </span>
-                      <h3 className="text-xl font-bold text-text-primary mt-1">
-                        {activePlan?.name}
+                      <h3 className="text-base font-bold text-text-primary tracking-tight">
+                        Investment Strategy Architecture
                       </h3>
+                      <p className="text-xs text-text-secondary mt-0.5">
+                        Tailored allocation architectures targeting{' '}
+                        <strong className="text-brand-lightGreen">{selectedGoal?.name || 'Primary Goal'}</strong>
+                      </p>
                     </div>
                   </div>
 
-                  <p className="text-xs text-text-secondary leading-relaxed max-w-3xl">
-                    {activePlan?.narrative.explanation}
-                  </p>
+                  {/* Recommendation Banner */}
+                  <StrategyRecommendationBanner />
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3">
-                    {plans.map((plan) => (
-                      <PlanCard
-                        key={plan.planId}
-                        plan={plan}
-                        onOpenDetails={(p) => setSelectedPlanForModal(p)}
-                      />
-                    ))}
+                  {/* 3 Strategy Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {plans.map((plan) => {
+                      const horizonYears = Math.max(1, (selectedGoal?.targetYear || 2031) - 2026);
+                      const isRecommended =
+                        horizonYears < 3
+                          ? plan.type === 'conservative'
+                          : user.riskProfile.category === 'Growth' || user.riskProfile.category === 'Aggressive'
+                          ? plan.type === 'growth'
+                          : user.riskProfile.category === 'Conservative'
+                          ? plan.type === 'conservative'
+                          : plan.type === 'balanced';
+
+                      return (
+                        <PlanCard
+                          key={plan.planId}
+                          plan={plan}
+                          isRecommended={isRecommended}
+                          onOpenDetails={(p) => setSelectedPlanForModal(p)}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -130,26 +147,12 @@ export const App: React.FC = () => {
             {/* TAB 2: PLANS & COMPARISON */}
             {activeTab === 'plans' && (
               <div className="space-y-8 animate-in fade-in duration-300">
-                {/* Plan Comparison Table */}
                 <PlanCompareView
                   onSelectPlan={(planId) => {
                     selectPlan(planId);
                   }}
+                  onOpenDetails={(p) => setSelectedPlanForModal(p)}
                 />
-
-                {/* 3 Detailed Cards */}
-                <div>
-                  <h3 className="text-lg font-bold text-text-primary mb-4">Detailed Plan Architectures</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {plans.map((plan) => (
-                      <PlanCard
-                        key={plan.planId}
-                        plan={plan}
-                        onOpenDetails={(p) => setSelectedPlanForModal(p)}
-                      />
-                    ))}
-                  </div>
-                </div>
               </div>
             )}
 

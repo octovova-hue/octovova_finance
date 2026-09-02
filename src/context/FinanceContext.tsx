@@ -249,7 +249,8 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
   };
 
   const login = (email: string, rawPassword: string): boolean => {
-    const account = usersDb[email];
+    const normalizedEmail = email.trim().toLowerCase();
+    const account = usersDb[normalizedEmail];
     if (account) {
       // Matches demo or stored account
       const isMatch =
@@ -259,10 +260,10 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
         account.passwordHash.length >= 32;
 
       if (isMatch) {
-        setCurrentEmail(email);
+        setCurrentEmail(normalizedEmail);
         setIsAuthenticated(true);
         setUser(account.profile);
-        localStorage.setItem('octovova_current_user_email', email);
+        localStorage.setItem('octovova_current_user_email', normalizedEmail);
 
         if (account.profile.hasCompletedOnboarding) {
           setIsOnboarded(true);
@@ -279,19 +280,20 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
   };
 
   const register = async (name: string, email: string, rawPassword: string, userAge?: number) => {
+    const normalizedEmail = email.trim().toLowerCase();
     const clientUuid = generateUUID();
     const secureHash = await hashPassword(rawPassword);
     const resolvedAge = userAge && userAge >= 18 && userAge <= 100 ? userAge : 30;
 
     // Create record in PostgreSQL first to get/confirm the database UUID with real age
-    const dbCustomer = await databaseService.createCustomer(name, email, secureHash, resolvedAge, clientUuid);
+    const dbCustomer = await databaseService.createCustomer(name, normalizedEmail, secureHash, resolvedAge, clientUuid);
     const resolvedCustomerId = dbCustomer?.customer_id || clientUuid;
 
     const newProfile: UserProfile = {
       id: resolvedCustomerId,
       name,
       age: resolvedAge,
-      email,
+      email: normalizedEmail,
       avatar: '🧑‍💼',
       hasCompletedOnboarding: false,
       income: [{ id: generateUUID(), source: 'Salary', monthlyAmount: 100000 }],
@@ -318,22 +320,22 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
     };
 
     const newAccount: AuthAccount = {
-      email,
+      email: normalizedEmail,
       passwordHash: secureHash,
       profile: newProfile,
     };
 
     setUsersDb(prev => ({
       ...prev,
-      [email]: newAccount,
+      [normalizedEmail]: newAccount,
     }));
 
-    setCurrentEmail(email);
+    setCurrentEmail(normalizedEmail);
     setIsAuthenticated(true);
     setUser(newProfile);
     setIsOnboarded(false);
     setOnboardingStep(0);
-    localStorage.setItem('octovova_current_user_email', email);
+    localStorage.setItem('octovova_current_user_email', normalizedEmail);
   };
 
   const logout = () => {

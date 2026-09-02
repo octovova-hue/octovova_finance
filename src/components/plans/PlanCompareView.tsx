@@ -141,7 +141,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
                 {plans.map((p) => (
                   <td
                     key={p.planId}
-                    className="p-4 text-center font-mono font-bold text-brand-lightGreen text-sm"
+                    className="p-4 text-center font-mono font-bold text-text-primary text-sm"
                   >
                     {formatINR(p.monthlyInvestmentRequired)}/mo
                   </td>
@@ -156,7 +156,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
                 {plans.map((p) => (
                   <td
                     key={p.planId}
-                    className="p-4 text-center font-mono font-bold text-brand-mint"
+                    className="p-4 text-center font-mono font-bold text-text-primary"
                   >
                     {p.expectedCagr}%
                   </td>
@@ -239,7 +239,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
                         className={`py-2 px-5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
                           isSelected
                             ? 'bg-brand-green/20 text-brand-lightGreen border border-brand-green/40 cursor-default'
-                            : 'bg-brand-green hover:bg-brand-darkGreen text-white shadow-glow-green hover:scale-105'
+                            : 'bg-gradient-to-r from-brand-lightGreen to-brand-darkGreen text-white shadow-glow-green hover:scale-105'
                         }`}
                       >
                         {isSelected ? '✓ Active Plan' : 'Select'}

@@ -168,7 +168,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
           className={`w-full h-11 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-200 ${
             isSelected
               ? 'bg-brand-green/15 text-brand-darkGreen border border-brand-green/40 hover:bg-brand-green/20'
-              : 'bg-brand-green hover:bg-brand-darkGreen text-white shadow-glow-green hover:scale-[1.01] active:scale-[0.99]'
+              : 'bg-gradient-to-r from-brand-lightGreen to-brand-darkGreen text-white shadow-glow-green hover:scale-[1.01] active:scale-[0.99]'
           }`}
         >
           {isSelected ? (

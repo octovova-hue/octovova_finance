@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useFinance } from '../../context/FinanceContext';
 import { OctovovaLogo } from '../common/OctovovaLogo';
+import { useTheme } from '../../context/ThemeContext';
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { RiskBadge } from '../common/Badge';
 import { formatINR } from '../../lib/formatters';
@@ -28,11 +29,14 @@ import {
   Layers,
   Bell,
   Sparkles,
+  Sun,
+  Moon,
 } from 'lucide-react';
 
 const PRESET_AVATARS = ['🧑‍💼', '👩‍💻', '👨‍🚀', '👩‍⚕️', '🧙‍♂️', '🦁', '💎', '🚀', '📈'];
 
 export const Header: React.FC = () => {
+  const { theme, toggleTheme } = useTheme();
   const {
     user,
     updateUser,
@@ -140,16 +144,28 @@ export const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 w-full bg-[#080E0C]/90 backdrop-blur-xl border-b border-brand-green/10 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        {/* Brand Logo */}
-        <div
-          className="flex items-center gap-2.5 cursor-pointer select-none"
-          onClick={() => setActiveTab('dashboard')}
-        >
-          <OctovovaLogo size="md" />
-          <div>
-            <span className="text-base font-extrabold tracking-tight text-text-primary flex items-center gap-1.5">
-              Octovova <span className="text-brand-lightGreen">Finance</span>
-            </span>
+        {/* Theme Toggle + Brand Logo */}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="p-2 rounded-full bg-surface-dark border border-white/8 hover:border-brand-green/40 text-text-secondary hover:text-brand-lightGreen transition-all shrink-0"
+            aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+
+          <div
+            className="flex items-center gap-2.5 cursor-pointer select-none"
+            onClick={() => setActiveTab('dashboard')}
+          >
+            <OctovovaLogo size="md" />
+            <div>
+              <span className="text-base font-extrabold tracking-tight text-text-primary flex items-center gap-1.5">
+                Octovova <span className="text-brand-lightGreen">Finance</span>
+              </span>
+            </div>
           </div>
         </div>
 
@@ -160,7 +176,7 @@ export const Header: React.FC = () => {
               onClick={() => setActiveTab('dashboard')}
               className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 activeTab === 'dashboard'
-                  ? 'bg-brand-green text-white shadow-glow-green font-bold'
+                  ? 'bg-gradient-green text-white shadow-glow-green font-bold'
                   : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
               }`}
             >
@@ -171,7 +187,7 @@ export const Header: React.FC = () => {
               onClick={() => setActiveTab('plans')}
               className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 activeTab === 'plans'
-                  ? 'bg-brand-green text-white shadow-glow-green font-bold'
+                  ? 'bg-gradient-green text-white shadow-glow-green font-bold'
                   : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
               }`}
             >
@@ -273,9 +289,9 @@ export const Header: React.FC = () => {
 
             {/* PROFILE DROPDOWN PANEL (Section 7: Opaque background fix) */}
             {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-[350px] sm:w-[420px] max-h-[calc(100vh-5rem)] overflow-y-auto bg-[#0B1510] rounded-card border border-brand-green/15 shadow-2xl p-5 space-y-4 z-50 animate-in fade-in zoom-in-95 duration-150 scrollbar-thin scrollbar-thumb-white/20">
+              <div className="absolute right-0 mt-2 w-[350px] sm:w-[420px] max-h-[calc(100vh-5rem)] overflow-y-auto bg-background-surface rounded-card border border-brand-green/15 shadow-2xl p-5 space-y-4 z-50 animate-in fade-in zoom-in-95 duration-150 scrollbar-thin scrollbar-thumb-white/20">
                 {/* Header Summary (Sticky top inside dropdown - Opaque) */}
-                <div className="sticky top-0 bg-[#0B1510] -mx-5 -mt-5 p-5 pb-3 border-b border-border z-10 flex items-start justify-between">
+                <div className="sticky top-0 bg-background-surface -mx-5 -mt-5 p-5 pb-3 border-b border-border z-10 flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className="text-3xl p-2 rounded-2xl bg-surface border border-border">
                       {user.avatar || '🧑‍💼'}
@@ -524,7 +540,7 @@ export const Header: React.FC = () => {
                 </div>
 
                 {/* Logout Button at Bottom (Sticky footer inside dropdown - Opaque) */}
-                <div className="sticky bottom-0 bg-[#0B1510] -mx-5 -mb-5 p-5 pt-3 border-t border-border z-10">
+                <div className="sticky bottom-0 bg-background-surface -mx-5 -mb-5 p-5 pt-3 border-t border-border z-10">
                   <button
                     type="button"
                     onClick={() => {

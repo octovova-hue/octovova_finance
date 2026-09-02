@@ -4,29 +4,74 @@
 
 @layer base {
   :root {
-    --background: #090E0C;
-    --surface: rgba(255, 255, 255, 0.04);
-    --surface-raised: rgba(255, 255, 255, 0.07);
-    --border: rgba(255, 255, 255, 0.08);
+    /* Dark theme (default) */
+    --color-bg: #090E0C;
+    --color-bg-dark: #050807;
+    --color-bg-surface: #0E1612;
+    --color-bg-light: #131F1A;
+    --color-surface: rgba(255, 255, 255, 0.04);
+    --color-surface-raised: rgba(255, 255, 255, 0.07);
+    --color-surface-hover: rgba(255, 255, 255, 0.10);
+    --color-surface-dark: #0C1310;
+    --color-surface-card: #0F1814;
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-border-subtle: rgba(255, 255, 255, 0.05);
+    --color-border-strong: rgba(255, 255, 255, 0.14);
+    --color-text-primary: #F9FAFB;
+    --color-text-secondary: #94A3B8;
+    --color-text-tertiary: #64748B;
+    --color-text-muted: #475569;
+
+    --background: var(--color-bg);
+    --surface: var(--color-surface);
+    --surface-raised: var(--color-surface-raised);
+    --border: var(--color-border);
     --brand-green: #10B981;
     --brand-mint: #34D399;
     --gain: #10B981;
     --danger: #F87171;
   }
 
+  [data-theme="light"] {
+    --color-bg: #F7FAF8;
+    --color-bg-dark: #EFF4F1;
+    --color-bg-surface: #FFFFFF;
+    --color-bg-light: #FFFFFF;
+    --color-surface: rgba(11, 42, 29, 0.03);
+    --color-surface-raised: rgba(11, 42, 29, 0.05);
+    --color-surface-hover: rgba(11, 42, 29, 0.08);
+    --color-surface-dark: #EDF2EF;
+    --color-surface-card: #FFFFFF;
+    --color-border: rgba(11, 42, 29, 0.10);
+    --color-border-subtle: rgba(11, 42, 29, 0.06);
+    --color-border-strong: rgba(11, 42, 29, 0.16);
+    --color-text-primary: #0B1510;
+    --color-text-secondary: #465650;
+    --color-text-tertiary: #6E8579;
+    --color-text-muted: #93A69D;
+  }
+
   body {
-    background-color: #090E0C;
-    background-image: 
+    background-color: var(--color-bg);
+    background-image:
       radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
       radial-gradient(circle at 100% 50%, rgba(5, 150, 105, 0.04) 0%, transparent 50%),
       radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.03) 0%, transparent 40%);
     background-attachment: fixed;
-    color: #F9FAFB;
+    color: var(--color-text-primary);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
     min-height: 100vh;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  [data-theme="light"] body {
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 60%),
+      radial-gradient(circle at 100% 50%, rgba(5, 150, 105, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.02) 0%, transparent 40%);
   }
 
   /* Consistent interactive element defaults */
@@ -46,8 +91,19 @@
     transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  [data-theme="light"] .fintech-card {
+    background: #FFFFFF;
+    background-image: linear-gradient(180deg, rgba(11, 42, 29, 0.02) 0%, rgba(11, 42, 29, 0.005) 100%);
+    border: 1px solid rgba(11, 42, 29, 0.08);
+    box-shadow: 0 4px 16px -4px rgba(11, 42, 29, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+  }
+
   .fintech-card:hover {
     border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  [data-theme="light"] .fintech-card:hover {
+    border-color: rgba(11, 42, 29, 0.16);
   }
 
   .fintech-card-elevated {
@@ -56,6 +112,13 @@
     border: 1px solid rgba(16, 185, 129, 0.35);
     box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.65), 0 0 24px -4px rgba(16, 185, 129, 0.18), inset 0 1px 0 0 rgba(16, 185, 129, 0.2);
     border-radius: 20px;
+  }
+
+  [data-theme="light"] .fintech-card-elevated {
+    background: #F2FBF6;
+    background-image: linear-gradient(180deg, rgba(16, 185, 129, 0.10) 0%, rgba(255, 255, 255, 0.4) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.30);
+    box-shadow: 0 12px 28px -8px rgba(16, 185, 129, 0.18), inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
   }
 
   /* Refined dark card: green-to-black gradient depth instead of a flat fill +
@@ -69,6 +132,14 @@
     box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.65), 0 0 44px -22px rgba(16, 185, 129, 0.28), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
   }
 
+  [data-theme="light"] .dash-card-dark {
+    background:
+      linear-gradient(165deg, rgba(16, 185, 129, 0.06) 0%, rgba(255, 255, 255, 0.98) 45%, #FFFFFF 100%),
+      #FFFFFF;
+    border: 1px solid rgba(11, 42, 29, 0.10);
+    box-shadow: 0 6px 20px -6px rgba(11, 42, 29, 0.10), 0 0 28px -18px rgba(16, 185, 129, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+  }
+
   /* Soft off-white / mint hero card — reserved for the single most
      important number on a screen (Total Net Worth) or the selected/
      recommended plan, to visually differentiate it from its peers. */
@@ -76,6 +147,12 @@
     background: linear-gradient(135deg, #FFFFFF 0%, #F2FBF6 45%, #E1F4EA 100%);
     border: 1px solid rgba(16, 185, 129, 0.20);
     box-shadow: 0 20px 48px -14px rgba(16, 185, 129, 0.28), 0 6px 18px -6px rgba(0, 0, 0, 0.25);
+  }
+
+  [data-theme="light"] .dash-card-light {
+    background: linear-gradient(135deg, #E9FBF2 0%, #D8F5E5 55%, #C7EFDA 100%);
+    border: 1px solid rgba(16, 185, 129, 0.32);
+    box-shadow: 0 16px 36px -12px rgba(16, 185, 129, 0.30), 0 4px 12px -4px rgba(11, 42, 29, 0.10);
   }
 
   /* Neutral grey/black gradient card — for secondary items sitting
@@ -89,12 +166,26 @@
     box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
   }
 
+  [data-theme="light"] .dash-card-neutral {
+    background:
+      linear-gradient(165deg, rgba(11, 42, 29, 0.035) 0%, #FBFCFB 45%, #F5F7F6 100%),
+      #F5F7F6;
+    border: 1px solid rgba(11, 42, 29, 0.10);
+    box-shadow: 0 6px 18px -6px rgba(11, 42, 29, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+  }
+
   .glass-card {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     background: rgba(13, 22, 18, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  }
+
+  [data-theme="light"] .glass-card {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(11, 42, 29, 0.08);
+    box-shadow: 0 8px 20px -6px rgba(11, 42, 29, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
   }
 
   .glass-card-raised {
@@ -105,10 +196,22 @@
     box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.55), 0 0 20px -4px rgba(16, 185, 129, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
   }
 
+  [data-theme="light"] .glass-card-raised {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    box-shadow: 0 12px 28px -8px rgba(16, 185, 129, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+  }
+
   .glass-hero-card {
     background: linear-gradient(180deg, #101F18 0%, #0B1611 100%);
     border: 1px solid rgba(16, 185, 129, 0.25);
     box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.65), 0 0 28px -6px rgba(16, 185, 129, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+
+  [data-theme="light"] .glass-hero-card {
+    background: linear-gradient(180deg, #F2FBF6 0%, #E1F4EA 100%);
+    border: 1px solid rgba(16, 185, 129, 0.30);
+    box-shadow: 0 16px 36px -10px rgba(16, 185, 129, 0.22), inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
   }
 
   /* Micro-interactions: 180-220ms ease-out */

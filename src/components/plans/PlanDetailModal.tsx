@@ -5,9 +5,10 @@ import { AllocationDonut } from '../charts/AllocationDonut';
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { formatINR } from '../../lib/formatters';
 import { RobotAdvisorColoredIcon } from '../common/ColoredIcon';
-import { X, Check, Info, Activity } from 'lucide-react';
+import { X, Check, Activity } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { fetchMonteCarloSimulation, MonteCarloSimulationData } from '../../lib/monteCarloService';
+import { InfoTooltip } from '../common/InfoTooltip';
 
 interface PlanDetailModalProps {
   plan: FinancialPlan | null;
@@ -80,8 +81,14 @@ export const PlanDetailModal: React.FC<PlanDetailModalProps> = ({ plan, onClose 
             {plan.narrative.explanation}
           </p>
           <div className="pt-2 flex items-start gap-2 text-xs text-text-secondary border-t border-border/40">
-            <Info className="w-4 h-4 text-text-tertiary shrink-0 mt-0.5" />
-            <span><strong className="text-text-primary">Volatility Profile:</strong> {plan.narrative.riskNote}</span>
+            <span className="flex items-center gap-1.5 shrink-0 mt-0.5">
+              <strong className="text-text-primary">Volatility Profile:</strong>
+              <InfoTooltip
+                align="left"
+                text="Volatility just means how much an investment's value moves up and down over time. Higher volatility means bigger swings day-to-day or month-to-month — potentially stronger growth over the long run, but a bumpier ride getting there."
+              />
+            </span>
+            <span>{plan.narrative.riskNote}</span>
           </div>
         </div>
 

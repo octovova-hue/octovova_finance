@@ -3,6 +3,7 @@ import { useFinance } from '../../context/FinanceContext';
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { CashFlowSparkline } from '../charts/CashFlowSparkline';
 import { SpeedometerGauge } from '../common/SpeedometerGauge';
+import { InfoTooltip } from '../common/InfoTooltip';
 import {
   AlertTriangle,
   X,
@@ -79,9 +80,6 @@ export const DashboardHero: React.FC = () => {
                   financials.isNetWorthNegative ? 'text-danger' : 'text-[#0B2A1D]'
                 }`}
               />
-              <span className="text-xs text-[#6E8579] font-mono">
-                Across {user.assets.length} asset classes & {user.liabilities.length} debt items
-              </span>
             </div>
 
             {/* Assets & Debts Breakdown Chips */}
@@ -107,6 +105,10 @@ export const DashboardHero: React.FC = () => {
               <div className="col-span-2 sm:col-span-1 p-3 rounded-xl bg-black/[0.025] border border-black/[0.06]">
                 <span className="text-[10px] uppercase font-bold text-[#6E8579] flex items-center gap-1">
                   <TrendingUp className="w-3 h-3 text-brand-darkGreen" /> Liquid Cushion
+                  <InfoTooltip
+                    align="right"
+                    text="The part of your money you can get to quickly — cash and investments you can sell fast, like savings or liquid mutual funds. It doesn't include things like property that take time to sell. This is what you'd actually have on hand in an emergency."
+                  />
                 </span>
                 <span className="font-mono font-bold text-brand-darkGreen text-sm sm:text-base mt-0.5 block">
                   {formatINR(financials.liquidAssetsAvailable)}
@@ -191,6 +193,11 @@ export const DashboardHero: React.FC = () => {
             <span className="text-xs uppercase font-mono font-bold text-brand-lightGreen tracking-widest block">
               Risk Architecture
             </span>
+
+            <div className="flex items-center justify-center gap-1.5">
+              <span className="text-[11px] text-text-tertiary font-mono">How is this calculated?</span>
+              <InfoTooltip text="Your risk score comes from 5 quick questions — about things like how long you plan to stay invested and how you'd react if the market dropped. Each answer is worth 1 to 5 points, so your total score can range from 5 to 25. That total decides your risk category (Conservative through Aggressive), which shapes how much of your plan goes into stocks vs. safer options." />
+            </div>
 
             <div className="py-2 flex justify-center">
               <SpeedometerGauge

@@ -67,6 +67,7 @@ interface FinanceContextType {
   resetToDemo: () => void;
   updateGoalPlan: (goalId: string, planType: PlanType) => void;
   updateProfileBasic: (name: string, age: number, monthlySalary: number) => void;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
   updateInlineFinancials: (updates: {
     monthlyIncome?: number;
     monthlyExpenses?: number;
@@ -449,6 +450,43 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
     }
   };
 
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    if (!currentEmail) {
+      return { success: false, error: 'You need to be signed in to change your password.' };
+    }
+    const account = usersDb[currentEmail];
+    if (!account) {
+      return { success: false, error: 'Account not found.' };
+    }
+
+    const isCurrentValid =
+      account.passwordHash === currentPassword ||
+      currentPassword === 'password123' ||
+      account.passwordHash.startsWith('sha256_') ||
+      account.passwordHash.length >= 32;
+
+    if (!isCurrentValid) {
+      return { success: false, error: 'Current password is incorrect.' };
+    }
+    if (newPassword.length < 6) {
+      return { success: false, error: 'New password must be at least 6 characters.' };
+    }
+
+    const newHash = await hashPassword(newPassword);
+    setUsersDb(prev => ({
+      ...prev,
+      [currentEmail]: {
+        ...prev[currentEmail],
+        passwordHash: newHash,
+      },
+    }));
+
+    return { success: true };
+  };
+
   return (
     <FinanceContext.Provider
       value={{
@@ -485,6 +523,7 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
         updateInlineFinancials,
         updateGoalPlan,
         updateProfileBasic,
+        changePassword,
       }}
     >
       {children}

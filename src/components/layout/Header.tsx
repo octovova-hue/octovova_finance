@@ -42,6 +42,7 @@ export const Header: React.FC = () => {
     logout,
     updateGoalPlan,
     updateProfileBasic,
+    changePassword,
   } = useFinance();
 
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
@@ -54,6 +55,39 @@ export const Header: React.FC = () => {
   const [editAge, setEditAge] = useState<number>(user.age || 30);
   const [editSalary, setEditSalary] = useState<number>(user.income?.[0]?.monthlyAmount || 150000);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
+
+  // Change Password fields
+  const [showPasswordFields, setShowPasswordFields] = useState<boolean>(false);
+  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<boolean>(false);
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError(null);
+    setPasswordSuccess(false);
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New passwords do not match.');
+      return;
+    }
+
+    const result = await changePassword(currentPassword, newPassword);
+    if (result.success) {
+      setPasswordSuccess(true);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => {
+        setPasswordSuccess(false);
+        setShowPasswordFields(false);
+      }, 1800);
+    } else {
+      setPasswordError(result.error || 'Could not update password.');
+    }
+  };
 
   // Keep edit fields synced if user updates elsewhere
   useEffect(() => {
@@ -363,6 +397,73 @@ export const Header: React.FC = () => {
                       )}
                     </button>
                   </form>
+
+                  {/* Change Password */}
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowPasswordFields((v) => !v);
+                        setPasswordError(null);
+                        setPasswordSuccess(false);
+                      }}
+                      className="w-full flex items-center justify-between text-[11px] font-semibold text-text-secondary hover:text-text-primary transition-colors py-1"
+                    >
+                      <span>Change Password</span>
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showPasswordFields ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {showPasswordFields && (
+                      <form onSubmit={handleChangePassword} className="space-y-2 pt-2">
+                        <input
+                          type="password"
+                          required
+                          placeholder="Current password"
+                          value={currentPassword}
+                          onChange={(e) => setCurrentPassword(e.target.value)}
+                          className="w-full bg-surface border border-border focus:border-brand-green rounded-full px-3 py-1.5 text-xs text-text-primary placeholder:text-text-tertiary outline-none"
+                        />
+                        <input
+                          type="password"
+                          required
+                          minLength={6}
+                          placeholder="New password (min. 6 characters)"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          className="w-full bg-surface border border-border focus:border-brand-green rounded-full px-3 py-1.5 text-xs text-text-primary placeholder:text-text-tertiary outline-none"
+                        />
+                        <input
+                          type="password"
+                          required
+                          placeholder="Confirm new password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          className="w-full bg-surface border border-border focus:border-brand-green rounded-full px-3 py-1.5 text-xs text-text-primary placeholder:text-text-tertiary outline-none"
+                        />
+
+                        {passwordError && (
+                          <p className="text-[10px] text-danger px-1">{passwordError}</p>
+                        )}
+
+                        <button
+                          type="submit"
+                          className={`w-full py-2 rounded-full font-bold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+                            passwordSuccess
+                              ? 'bg-brand-green text-white'
+                              : 'bg-surface border border-brand-green/40 text-brand-lightGreen hover:bg-brand-green/10'
+                          }`}
+                        >
+                          {passwordSuccess ? (
+                            <>
+                              <Check className="w-3.5 h-3.5" /> Password Updated!
+                            </>
+                          ) : (
+                            'Update Password'
+                          )}
+                        </button>
+                      </form>
+                    )}
+                  </div>
                 </div>
 
                 {/* Section 4: "Switch Active Plan Per Goal" Control */}

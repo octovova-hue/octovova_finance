@@ -17,19 +17,19 @@ export const StrategyRecommendationBanner: React.FC = () => {
 
   if (horizonYears < 3) {
     recommendedPlanType = 'conservative';
-    recommendationReason = `Because "${selectedGoal?.name || 'your goal'}" is due in ${horizonYears} ${horizonYears === 1 ? 'year' : 'years'}, capital preservation is paramount. The Conservative strategy limits equity volatility so your accumulated wealth stays safeguarded near withdrawal.`;
+    recommendationReason = `"${selectedGoal?.name || 'Your goal'}" is coming up in ${horizonYears} ${horizonYears === 1 ? 'year' : 'years'}, so we're keeping things safe. The Low Risk plan avoids big swings, so your money is ready when you need it.`;
     highlightIcon = Shield;
   } else if (riskCategory === 'Growth' || riskCategory === 'Aggressive') {
     recommendedPlanType = 'growth';
-    recommendationReason = `Given your ${riskCategory} risk profile (Score: ${user.riskProfile.score}/25) and a ${horizonYears}-year horizon, the Growth strategy unlocks maximum compounding, lowering your monthly capital burden.`;
+    recommendationReason = `Your risk profile shows you're comfortable with market ups and downs, so the High Risk plan aims for stronger long-term growth with a lower monthly investment.`;
     highlightIcon = TrendingUp;
   } else if (riskCategory === 'Conservative') {
     recommendedPlanType = 'conservative';
-    recommendationReason = `Aligned with your Conservative risk preference, this strategy provides a robust 65% debt cushion and stable returns to reach "${selectedGoal?.name}" with peace of mind.`;
+    recommendationReason = `This matches your Conservative risk profile — steady returns and a strong safety cushion to reach "${selectedGoal?.name}" with less stress.`;
     highlightIcon = Shield;
   } else {
     recommendedPlanType = 'balanced';
-    recommendationReason = `Recommended for ${user.name || 'you'} based on your Balanced risk profile (Score: ${user.riskProfile.score}/25) and ${horizonYears}-year horizon. Offers an optimal 55% equity upside anchored by 40% debt protection.`;
+    recommendationReason = `Based on your Balanced risk profile and ${horizonYears}-year timeline, this plan balances growth and safety for a comfortable path to your goal.`;
     highlightIcon = Compass;
   }
 

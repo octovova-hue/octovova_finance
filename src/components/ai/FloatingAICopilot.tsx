@@ -27,6 +27,7 @@ export const FloatingAICopilot: React.FC = () => {
   if (!isOnboarded) return null;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
   const [messages, setMessages] = useState<AIChatMessage[]>([
     {
       id: 'quick_welcome',
@@ -103,8 +104,13 @@ export const FloatingAICopilot: React.FC = () => {
         /* Minimized Sleek Pill - Non-obstructive docking */
         <button
           type="button"
-          onClick={() => setIsOpen(true)}
-          className="pointer-events-auto group flex items-center gap-2.5 h-11 px-4 rounded-full bg-[#0D1612] hover:bg-[#121F19] border border-white/12 hover:border-brand-green/50 text-text-primary font-semibold text-xs shadow-card transition-all duration-200 hover:scale-105 active:scale-95"
+          onClick={() => {
+            setIsOpen(true);
+            setHasInteracted(true);
+          }}
+          className={`pointer-events-auto group flex items-center gap-2.5 h-11 px-4 rounded-full bg-[#0D1612] hover:bg-[#121F19] border border-white/12 hover:border-brand-green/50 text-text-primary font-semibold text-xs shadow-card transition-all duration-200 hover:scale-105 active:scale-95 ${
+            !hasInteracted ? 'animate-ai-jump' : ''
+          }`}
           aria-label="Open AI Advisor Copilot"
         >
           <div className="w-6 h-6 rounded-full bg-brand-green/20 text-brand-lightGreen flex items-center justify-center">

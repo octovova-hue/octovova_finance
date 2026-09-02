@@ -41,11 +41,17 @@ export const PlanCard: React.FC<PlanCardProps> = ({
     growth: 'High Risk',
   }[plan.type];
 
-  // Benefit statement
+  const riskBadgeStyle = {
+    conservative: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40',
+    balanced: 'bg-orange-500/15 text-orange-400 border-orange-500/40',
+    growth: 'bg-red-500/15 text-red-400 border-red-500/40',
+  }[plan.type];
+
+  // Concise, plain-language benefit statement
   const benefitStatement = {
-    conservative: 'Maximum capital preservation with stable fixed-income yields.',
-    balanced: 'Optimal blend of wealth compounding and downside cushion.',
-    growth: 'Highest compounding velocity to minimize monthly capital requirements.',
+    conservative: 'Steady, safer growth with minimal ups and downs.',
+    balanced: 'A balanced mix of growth and safety.',
+    growth: 'Stronger long-term growth for higher risk tolerance.',
   }[plan.type];
 
   return (
@@ -67,7 +73,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary">
               {plan.name}
             </span>
-            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-white/5 text-text-tertiary border border-white/8">
+            <span className={`text-[10px] uppercase font-mono px-2 py-0.5 rounded-full border font-bold ${riskBadgeStyle}`}>
               {riskLabel}
             </span>
           </div>

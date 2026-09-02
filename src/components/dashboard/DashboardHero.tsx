@@ -73,13 +73,20 @@ export const DashboardHero: React.FC = () => {
 
             {/* Net Worth Large Metric */}
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
-              <AnimatedNumber
-                value={financials.netWorth}
-                currency="INR"
-                className={`text-3xl sm:text-4xl lg:text-5xl font-mono font-extrabold tracking-tight ${
-                  financials.isNetWorthNegative ? 'text-danger' : 'text-[#0B2A1D]'
-                }`}
-              />
+              <span className="flex items-baseline gap-1.5">
+                {financials.isNetWorthNegative ? (
+                  <ArrowDownRight className="w-6 h-6 sm:w-8 sm:h-8 text-danger shrink-0 self-center" strokeWidth={2.75} />
+                ) : (
+                  <ArrowUpRight className="w-6 h-6 sm:w-8 sm:h-8 text-brand-darkGreen shrink-0 self-center" strokeWidth={2.75} />
+                )}
+                <AnimatedNumber
+                  value={Math.abs(financials.netWorth)}
+                  currency="INR"
+                  className={`text-3xl sm:text-4xl lg:text-5xl font-mono font-extrabold tracking-tight ${
+                    financials.isNetWorthNegative ? 'text-danger' : 'text-[#0B2A1D]'
+                  }`}
+                />
+              </span>
             </div>
 
             {/* Assets & Debts Breakdown Chips */}

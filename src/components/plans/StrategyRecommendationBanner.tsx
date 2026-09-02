@@ -66,7 +66,7 @@ export const StrategyRecommendationBanner: React.FC = () => {
           </div>
         </div>
 
-        <div className="hidden lg:flex flex-col items-end shrink-0 pl-4 border-l border-white/8 text-right">
+        <div className="hidden lg:flex flex-col items-end shrink-0 pl-4 border-l border-white/6 text-right">
           <span className="text-[10px] uppercase font-mono text-text-tertiary">Horizon vs Risk</span>
           <span className="text-xs font-mono font-bold text-text-primary mt-0.5">
             {horizonYears}y Horizon · {riskCategory}

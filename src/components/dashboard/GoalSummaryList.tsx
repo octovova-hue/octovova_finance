@@ -111,7 +111,7 @@ export const GoalSummaryList: React.FC = () => {
 
       {/* Goals Grid */}
       {sortedGoals.length === 0 ? (
-        <div className="p-10 rounded-2xl bg-[#0D1612] border border-dashed border-white/10 text-center space-y-3">
+        <div className="p-10 rounded-2xl bg-[#0D1612] border border-dashed border-brand-green/25 text-center space-y-3">
           <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto text-text-tertiary">
             <Target className="w-6 h-6" />
           </div>

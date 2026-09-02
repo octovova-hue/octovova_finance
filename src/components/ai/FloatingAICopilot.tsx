@@ -99,7 +99,7 @@ export const FloatingAICopilot: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-30 pointer-events-none">
+    <div className="fixed bottom-12 sm:bottom-10 right-6 z-30 pointer-events-none">
       {!isOpen ? (
         /* Minimized Sleek Pill - Non-obstructive docking */
         <button
@@ -122,9 +122,9 @@ export const FloatingAICopilot: React.FC = () => {
         </button>
       ) : (
         /* Expanded Floating Chat Panel / Responsive Sheet on Mobile */
-        <div className="pointer-events-auto fixed inset-x-3 bottom-3 sm:inset-auto sm:bottom-6 sm:right-6 w-auto sm:w-[420px] h-[520px] max-h-[85vh] bg-[#0C1410] rounded-2xl border border-white/12 flex flex-col shadow-modal overflow-hidden animate-modal-enter">
+        <div className="pointer-events-auto fixed inset-x-3 bottom-3 sm:inset-auto sm:bottom-6 sm:right-6 w-auto sm:w-[420px] h-[520px] max-h-[85vh] dash-card-dark rounded-2xl flex flex-col overflow-hidden animate-modal-enter">
           {/* Header */}
-          <div className="p-4 bg-[#0F1914] border-b border-white/8 flex items-center justify-between">
+          <div className="p-4 bg-[#0F1914] border-b border-white/6 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="p-2 rounded-xl bg-brand-green/15 text-brand-lightGreen border border-brand-green/20">
                 <Bot className="w-4 h-4" />
@@ -232,7 +232,7 @@ export const FloatingAICopilot: React.FC = () => {
               e.preventDefault();
               handleSend(input);
             }}
-            className="p-3 bg-[#0F1914] border-t border-white/8 flex items-center gap-2"
+            className="p-3 bg-[#0F1914] border-t border-white/6 flex items-center gap-2"
           >
             <input
               type="text"

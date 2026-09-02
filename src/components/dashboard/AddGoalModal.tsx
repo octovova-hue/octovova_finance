@@ -167,9 +167,9 @@ export const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose }) =
 
   return (
     <ModalPortal isOpen={isOpen} onClose={onClose} ariaLabel="Add Financial Goal">
-      <div className="w-full max-w-[700px] bg-[#0C1410] border border-white/10 rounded-2xl shadow-modal overflow-hidden text-left animate-modal-enter">
+      <div className="w-full max-w-[700px] dash-card-dark rounded-2xl overflow-hidden text-left animate-modal-enter">
         {/* Header */}
-        <div className="flex items-start justify-between px-6 py-5 border-b border-white/8 bg-[#0F1914]">
+        <div className="flex items-start justify-between px-6 py-5 border-b border-white/6 bg-[#0F1914]">
           <div>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-brand-green animate-pulse" />

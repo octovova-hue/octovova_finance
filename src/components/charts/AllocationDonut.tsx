@@ -41,7 +41,7 @@ export const AllocationDonut: React.FC<AllocationDonutProps> = ({
                 if (active && payload && payload.length) {
                   const item = payload[0];
                   return (
-                    <div className="rounded-lg bg-[#0C1410] px-3 py-1.5 text-xs font-semibold shadow-card border border-white/10">
+                    <div className="rounded-lg bg-[#0C1410] px-3 py-1.5 text-xs font-semibold shadow-card border border-brand-green/20">
                       <span className="text-text-secondary">{item.name}: </span>
                       <span className="font-mono text-brand-lightGreen">{item.value}%</span>
                     </div>

@@ -48,7 +48,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
       {/* Desktop Side-by-Side Cards (Grid of 3) / Mobile Swipeable Tabs */}
       <div className="space-y-3">
         {/* Mobile Tab Switcher */}
-        <div className="flex sm:hidden items-center justify-center p-1 rounded-xl bg-surface-dark border border-white/8">
+        <div className="flex sm:hidden items-center justify-center p-1 rounded-xl bg-surface-dark border border-brand-green/15">
           {plans.map((p, idx) => (
             <button
               key={p.planId}
@@ -95,10 +95,10 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
           Side-by-Side Asset Allocation & Return Matrix
         </h3>
 
-        <div className="overflow-x-auto rounded-2xl border border-white/8 bg-[#0D1612] shadow-card">
+        <div className="overflow-x-auto rounded-2xl dash-card-dark">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-white/8 bg-black/20">
+              <tr className="border-b border-white/6 bg-black/20">
                 <th className="p-4 font-bold text-text-secondary uppercase tracking-wider text-[11px]">
                   Strategic Metric
                 </th>

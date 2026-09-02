@@ -64,7 +64,6 @@ export const PlanCard: React.FC<PlanCardProps> = ({
   const textSecondary = isHighlighted ? 'text-[#3F5B4E]' : 'text-text-secondary';
   const textTertiary = isHighlighted ? 'text-[#6E8579]' : 'text-text-tertiary';
   const textAccent = isHighlighted ? 'text-brand-darkGreen' : 'text-brand-lightGreen';
-  const chipBg = isHighlighted ? 'bg-black/[0.03] border-black/[0.08]' : 'bg-white/[0.03] border-white/8';
   const dividerBorder = isHighlighted ? 'border-black/[0.08]' : 'border-white/6';
 
   return (

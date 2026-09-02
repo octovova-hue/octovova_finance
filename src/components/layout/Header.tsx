@@ -174,7 +174,7 @@ export const Header: React.FC = () => {
 
               {/* Notifications Popover */}
               {isNotificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-[#0C1410] rounded-2xl border border-white/10 shadow-modal p-4 space-y-3 z-50 animate-modal-enter text-left">
+                <div className="absolute right-0 mt-2 w-80 dash-card-dark rounded-2xl p-4 space-y-3 z-50 animate-modal-enter text-left">
                   <div className="flex items-center justify-between border-b border-white/8 pb-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-text-primary">
                       Fintech Intelligence
@@ -239,7 +239,7 @@ export const Header: React.FC = () => {
 
             {/* PROFILE DROPDOWN PANEL (Section 7: Opaque background fix) */}
             {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-[350px] sm:w-[420px] max-h-[calc(100vh-5rem)] overflow-y-auto bg-[#0B1510] rounded-card border border-border/80 shadow-2xl p-5 space-y-4 z-50 animate-in fade-in zoom-in-95 duration-150 scrollbar-thin scrollbar-thumb-white/20">
+              <div className="absolute right-0 mt-2 w-[350px] sm:w-[420px] max-h-[calc(100vh-5rem)] overflow-y-auto bg-[#0B1510] rounded-card border border-brand-green/15 shadow-2xl p-5 space-y-4 z-50 animate-in fade-in zoom-in-95 duration-150 scrollbar-thin scrollbar-thumb-white/20">
                 {/* Header Summary (Sticky top inside dropdown - Opaque) */}
                 <div className="sticky top-0 bg-[#0B1510] -mx-5 -mt-5 p-5 pb-3 border-b border-border z-10 flex items-start justify-between">
                   <div className="flex items-center gap-3">

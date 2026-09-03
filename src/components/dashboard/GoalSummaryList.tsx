@@ -148,7 +148,7 @@ export const GoalSummaryList: React.FC = () => {
                 onClick={() => setSelectedGoal(goal)}
                 className={`group relative p-5 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-4 ${
                   isSelected
-                    ? 'bg-[#101C17] border-brand-green/60 shadow-glow-green ring-1 ring-brand-green/30'
+                    ? 'bg-background-surface border-brand-green/60 shadow-glow-green ring-1 ring-brand-green/30'
                     : 'dash-card-dark hover:border-brand-green/30'
                 }`}
               >
@@ -159,7 +159,7 @@ export const GoalSummaryList: React.FC = () => {
                       className={`p-2.5 rounded-xl border transition-colors ${
                         isSelected
                           ? 'bg-brand-green/15 border-brand-green/30'
-                          : 'bg-white/5 border-white/8'
+                          : 'bg-surface border-border'
                       }`}
                     >
                       {getGoalIcon(goal.goalType)}
@@ -212,7 +212,7 @@ export const GoalSummaryList: React.FC = () => {
                 </div>
 
                 {/* Middle Row: Financial Metrics (Cost Today vs Projected Inflation FV) */}
-                <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-black/20 border border-white/5 text-xs">
+                <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-surface border border-border text-xs">
                   <div>
                     <span className="text-[10px] uppercase font-bold text-text-tertiary block">
                       Cost in {currentYear}
@@ -239,7 +239,7 @@ export const GoalSummaryList: React.FC = () => {
                       {formatINR(fundedAmount, true)} ({progressPct}%)
                     </span>
                   </div>
-                  <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                  <div className="h-2 w-full bg-surface rounded-full overflow-hidden border border-border">
                     <div
                       className="h-full bg-gradient-to-r from-brand-darkGreen to-brand-lightGreen rounded-full transition-all duration-500"
                       style={{ width: `${Math.max(5, progressPct)}%` }}

@@ -141,41 +141,95 @@ export const DashboardHero: React.FC = () => {
           </div>
         </div>
 
-        {/* Connected Risk Profile Card — dark green-to-black gradient */}
-        <div className="dash-card-dark rounded-2xl p-6 flex flex-col justify-between items-center text-center relative group">
-          <div className="w-full flex items-center justify-between">
-            <span className="text-xs uppercase font-bold text-text-secondary tracking-wider">
-              Risk Profile & Health
-            </span>
-            <button
-              type="button"
-              onClick={() => setShowFullRiskModal(true)}
-              className="p-1 text-text-tertiary hover:text-brand-lightGreen rounded-lg hover:bg-surface transition-colors"
-              title="Expand full risk architecture"
-            >
-              <Maximize2 className="w-3.5 h-3.5" />
-            </button>
+        {/* Right Column: Risk Profile (compact) + Emergency Fund, stacked */}
+        <div className="flex flex-col gap-4">
+          {/* Connected Risk Profile Card — dark green-to-black gradient */}
+          <div className="dash-card-dark rounded-2xl p-4 flex flex-col justify-between items-center text-center relative group">
+            <div className="w-full flex items-center justify-between">
+              <span className="text-xs uppercase font-bold text-text-secondary tracking-wider">
+                Risk Profile & Health
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowFullRiskModal(true)}
+                className="p-1 text-text-tertiary hover:text-brand-lightGreen rounded-lg hover:bg-surface transition-colors"
+                title="Expand full risk architecture"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Speedometer Gauge */}
+            <div className="py-1">
+              <SpeedometerGauge
+                score={user.riskProfile.score}
+                category={user.riskProfile.category}
+                compact={true}
+                onClickDetail={() => setShowFullRiskModal(true)}
+              />
+            </div>
+
+            <div className="w-full pt-2.5 border-t border-white/6 flex items-center justify-between text-xs">
+              <span className="text-text-tertiary">Score: <strong className="text-text-primary font-mono">{user.riskProfile.score}/25</strong></span>
+              <button
+                type="button"
+                onClick={() => setShowFullRiskModal(true)}
+                className="text-brand-lightGreen hover:underline font-semibold"
+              >
+                Risk Breakdown →
+              </button>
+            </div>
           </div>
 
-          {/* Speedometer Gauge */}
-          <div className="py-2">
-            <SpeedometerGauge
-              score={user.riskProfile.score}
-              category={user.riskProfile.category}
-              compact={true}
-              onClickDetail={() => setShowFullRiskModal(true)}
-            />
-          </div>
+          {/* Emergency Fund Card — backend-computed savings capacity & reserve coverage */}
+          <div className="dash-card-dark rounded-2xl p-4 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs uppercase font-bold text-text-secondary tracking-wider flex items-center gap-1.5">
+                <ShieldAlert className="w-3.5 h-3.5 text-brand-lightGreen" /> Emergency Fund
+              </span>
+              <span
+                className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${
+                  financials.isEmergencyFundAdequate
+                    ? 'bg-brand-green/15 text-brand-lightGreen border-brand-green/30'
+                    : 'bg-amber-400/10 text-amber-300 border-amber-400/30'
+                }`}
+              >
+                {financials.isEmergencyFundAdequate ? 'Healthy' : 'Needs Attention'}
+              </span>
+            </div>
 
-          <div className="w-full pt-3 border-t border-white/6 flex items-center justify-between text-xs">
-            <span className="text-text-tertiary">Score: <strong className="text-text-primary font-mono">{user.riskProfile.score}/25</strong></span>
-            <button
-              type="button"
-              onClick={() => setShowFullRiskModal(true)}
-              className="text-brand-lightGreen hover:underline font-semibold"
-            >
-              Risk Breakdown →
-            </button>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-text-tertiary">Monthly Savings Capacity</span>
+              <span className="font-mono font-bold text-brand-lightGreen">
+                {formatINR(financials.savingsCapacity, true)}
+              </span>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between text-[11px] mb-1">
+                <span className="text-text-tertiary">
+                  Target: {formatINR(financials.emergencyFundRequired, true)}
+                </span>
+                <span className="font-mono font-semibold text-text-primary">
+                  {financials.emergencyFundMonthsCovered} / {assumptions.emergencyBufferMonths} mo
+                </span>
+              </div>
+              <div className="h-2 w-full bg-surface rounded-full overflow-hidden border border-border">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    financials.isEmergencyFundAdequate
+                      ? 'bg-gradient-to-r from-brand-darkGreen to-brand-lightGreen'
+                      : 'bg-gradient-to-r from-amber-500 to-amber-300'
+                  }`}
+                  style={{
+                    width: `${Math.min(
+                      100,
+                      Math.max(5, (financials.emergencyFundMonthsCovered / assumptions.emergencyBufferMonths) * 100)
+                    )}%`,
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

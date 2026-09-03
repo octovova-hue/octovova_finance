@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useFinance } from '../../context/FinanceContext';
 import { OctovovaLogo } from '../common/OctovovaLogo';
+import { GlossaryModal } from '../common/GlossaryModal';
 import { useTheme } from '../../context/ThemeContext';
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { RiskBadge } from '../common/Badge';
@@ -31,6 +32,7 @@ import {
   Sparkles,
   Sun,
   Moon,
+  BookOpen,
 } from 'lucide-react';
 
 const PRESET_AVATARS = ['🧑‍💼', '👩‍💻', '👨‍🚀', '👩‍⚕️', '🧙‍♂️', '🦁', '💎', '🚀', '📈'];
@@ -51,6 +53,7 @@ export const Header: React.FC = () => {
 
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
+  const [isGlossaryOpen, setIsGlossaryOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
@@ -209,6 +212,19 @@ export const Header: React.FC = () => {
 
         {/* Right Tools & Profile */}
         <div className="flex items-center gap-2 sm:gap-3 relative">
+          {/* Glossary Trigger */}
+          {isOnboarded && (
+            <button
+              type="button"
+              onClick={() => setIsGlossaryOpen(true)}
+              className="p-2 rounded-xl bg-surface-dark hover:bg-white/5 border border-white/8 hover:border-brand-green/40 text-text-secondary hover:text-brand-lightGreen transition-all hidden sm:flex items-center gap-1.5"
+              aria-label="Open finance glossary"
+              title="Finance Glossary"
+            >
+              <BookOpen className="w-4 h-4" />
+            </button>
+          )}
+
           {/* Notifications Trigger */}
           {isOnboarded && (
             <div className="relative" ref={notifRef}>
@@ -587,6 +603,8 @@ export const Header: React.FC = () => {
           </button>
         </div>
       )}
+
+      <GlossaryModal isOpen={isGlossaryOpen} onClose={() => setIsGlossaryOpen(false)} />
     </header>
   );
 };

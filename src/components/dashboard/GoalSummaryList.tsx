@@ -88,7 +88,7 @@ export const GoalSummaryList: React.FC = () => {
             <h3 className="text-base font-bold text-text-primary tracking-tight">
               Financial Goals & Milestones
             </h3>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-text-secondary font-mono border border-white/8">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-surface text-text-secondary font-mono border border-border">
               {sortedGoals.length} {sortedGoals.length === 1 ? 'Goal' : 'Goals'}
             </span>
           </div>
@@ -111,8 +111,8 @@ export const GoalSummaryList: React.FC = () => {
 
       {/* Goals Grid */}
       {sortedGoals.length === 0 ? (
-        <div className="p-10 rounded-2xl bg-[#0D1612] border border-dashed border-brand-green/25 text-center space-y-3">
-          <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto text-text-tertiary">
+        <div className="p-10 rounded-2xl bg-surface-dark border border-dashed border-brand-green/25 text-center space-y-3">
+          <div className="w-12 h-12 rounded-full bg-surface flex items-center justify-center mx-auto text-text-tertiary">
             <Target className="w-6 h-6" />
           </div>
           <div>
@@ -202,7 +202,7 @@ export const GoalSummaryList: React.FC = () => {
                             removeGoal(goal.id);
                           }
                         }}
-                        className="p-1 text-text-tertiary hover:text-danger rounded-md hover:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="p-1 text-text-tertiary hover:text-danger rounded-md hover:bg-surface opacity-0 group-hover:opacity-100 transition-opacity"
                         title="Delete goal"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -271,7 +271,7 @@ export const GoalSummaryList: React.FC = () => {
                           className={`px-2.5 py-1 text-[10px] font-semibold rounded-md transition-all duration-150 ${
                             isPlanActive
                               ? 'bg-brand-green text-white shadow-glow-green font-bold'
-                              : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                              : 'text-text-secondary hover:text-text-primary hover:bg-surface'
                           }`}
                         >
                           {pt.label}

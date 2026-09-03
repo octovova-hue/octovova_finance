@@ -62,7 +62,7 @@ export const GlossaryModal: React.FC<GlossaryModalProps> = ({ isOpen, onClose })
     <ModalPortal isOpen={isOpen} onClose={onClose} ariaLabel="Finance Glossary">
       <div className="w-full max-w-2xl max-h-[85vh] dash-card-dark rounded-2xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="p-5 sm:p-6 pb-4 border-b border-white/6 shrink-0">
+        <div className="p-5 sm:p-6 pb-4 border-b border-border shrink-0">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-extrabold text-text-primary tracking-tight">Quick Glossary</h2>
@@ -73,7 +73,7 @@ export const GlossaryModal: React.FC<GlossaryModalProps> = ({ isOpen, onClose })
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-white/5 transition-colors shrink-0"
+              className="p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-surface transition-colors shrink-0"
               aria-label="Close glossary"
             >
               <X className="w-4.5 h-4.5" />
@@ -88,7 +88,7 @@ export const GlossaryModal: React.FC<GlossaryModalProps> = ({ isOpen, onClose })
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search a term..."
-              className="w-full h-10 pl-10 pr-4 rounded-full bg-surface-dark border border-white/8 focus:border-brand-green/50 text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all"
+              className="w-full h-10 pl-10 pr-4 rounded-full bg-surface-dark border border-border focus:border-brand-green/50 text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all"
             />
           </div>
 
@@ -105,7 +105,7 @@ export const GlossaryModal: React.FC<GlossaryModalProps> = ({ isOpen, onClose })
                   className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide transition-all border ${
                     isActive
                       ? 'bg-gradient-green text-white border-transparent shadow-glow-green'
-                      : 'text-text-secondary border-white/8 hover:border-white/20 hover:text-text-primary'
+                      : 'text-text-secondary border-border hover:border-brand-green/30 hover:text-text-primary'
                   }`}
                 >
                   {label}
@@ -127,7 +127,7 @@ export const GlossaryModal: React.FC<GlossaryModalProps> = ({ isOpen, onClose })
               return (
                 <div
                   key={t.term}
-                  className="p-3.5 rounded-xl bg-white/[0.02] border border-white/8 hover:border-brand-green/30 transition-colors animate-in fade-in"
+                  className="p-3.5 rounded-xl bg-surface border border-border hover:border-brand-green/30 transition-colors animate-in fade-in"
                   style={{ animationDelay: `${Math.min(i * 30, 300)}ms` }}
                 >
                   <div className="flex items-center gap-2 mb-1.5">
@@ -144,7 +144,7 @@ export const GlossaryModal: React.FC<GlossaryModalProps> = ({ isOpen, onClose })
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-white/6 text-center shrink-0">
+        <div className="px-5 py-3 border-t border-border text-center shrink-0">
           <span className="text-[11px] text-text-tertiary">
             Showing {filtered.length} of {TERMS.length} terms
           </span>

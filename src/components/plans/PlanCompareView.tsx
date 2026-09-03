@@ -98,7 +98,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
         <div className="overflow-x-auto rounded-2xl dash-card-dark">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-white/6 bg-black/20">
+              <tr className="border-b border-border bg-surface">
                 <th className="p-4 font-bold text-text-secondary uppercase tracking-wider text-[11px]">
                   Strategic Metric
                 </th>
@@ -134,7 +134,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
             </thead>
             <tbody className="divide-y divide-white/6 font-medium">
               {/* Monthly SIP Required */}
-              <tr className="hover:bg-white/[0.02] transition-colors">
+              <tr className="hover:bg-surface transition-colors">
                 <td className="p-4 font-semibold text-text-primary">
                   Required Monthly SIP
                 </td>
@@ -149,7 +149,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
               </tr>
 
               {/* Expected CAGR */}
-              <tr className="hover:bg-white/[0.02] transition-colors">
+              <tr className="hover:bg-surface transition-colors">
                 <td className="p-4 font-semibold text-text-primary">
                   Expected Portfolio CAGR
                 </td>
@@ -164,7 +164,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
               </tr>
 
               {/* Equity Allocation */}
-              <tr className="hover:bg-white/[0.02] transition-colors">
+              <tr className="hover:bg-surface transition-colors">
                 <td className="p-4 text-text-secondary">Equity Exposure</td>
                 {plans.map((p) => (
                   <td
@@ -177,7 +177,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
               </tr>
 
               {/* Debt Allocation */}
-              <tr className="hover:bg-white/[0.02] transition-colors">
+              <tr className="hover:bg-surface transition-colors">
                 <td className="p-4 text-text-secondary">Debt & Fixed Income</td>
                 {plans.map((p) => (
                   <td
@@ -190,7 +190,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
               </tr>
 
               {/* Cash Cushion */}
-              <tr className="hover:bg-white/[0.02] transition-colors">
+              <tr className="hover:bg-surface transition-colors">
                 <td className="p-4 text-text-secondary">Cash Cushion</td>
                 {plans.map((p) => (
                   <td
@@ -203,7 +203,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
               </tr>
 
               {/* Risk Suitability */}
-              <tr className="hover:bg-white/[0.02] transition-colors">
+              <tr className="hover:bg-surface transition-colors">
                 <td className="p-4 text-text-secondary">Risk Match</td>
                 {plans.map((p) => {
                   const isMatch = user.riskProfile.category.toLowerCase() === p.type;
@@ -224,7 +224,7 @@ export const PlanCompareView: React.FC<PlanCompareViewProps> = ({ onSelectPlan, 
               </tr>
 
               {/* Selection CTA */}
-              <tr className="bg-black/10">
+              <tr className="bg-surface">
                 <td className="p-4 font-semibold text-text-primary">Decision Action</td>
                 {plans.map((p) => {
                   const isSelected = user.activePlanId === p.planId || (!user.activePlanId && p.type === 'balanced');

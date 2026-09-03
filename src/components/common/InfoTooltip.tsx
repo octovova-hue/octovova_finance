@@ -80,7 +80,7 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({ text, className = '' }
           e.stopPropagation();
           setOpen((o) => !o);
         }}
-        className="w-4 h-4 rounded-full bg-white/10 hover:bg-brand-green/30 text-text-tertiary hover:text-brand-lightGreen flex items-center justify-center text-[9px] font-bold border border-white/15 transition-colors shrink-0"
+        className="w-4 h-4 rounded-full bg-surface hover:bg-brand-green/30 text-text-tertiary hover:text-brand-lightGreen flex items-center justify-center text-[9px] font-bold border border-border transition-colors shrink-0"
         aria-label="More information"
         aria-expanded={open}
       >

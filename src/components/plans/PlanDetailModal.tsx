@@ -132,25 +132,25 @@ export const PlanDetailModal: React.FC<PlanDetailModalProps> = ({ plan, onClose 
 
           {mcData ? (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center">
-              <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/10">
+              <div className="p-2.5 rounded-xl bg-surface border border-border">
                 <span className="text-[10px] font-semibold text-text-secondary block">Success Probability</span>
                 <span className="text-lg font-mono font-bold text-brand-lightGreen block mt-0.5">
                   {mcData.goal_success_probability}%
                 </span>
               </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/10">
+              <div className="p-2.5 rounded-xl bg-surface border border-border">
                 <span className="text-[10px] font-semibold text-text-secondary block">Median CAGR (P50)</span>
                 <span className="text-lg font-mono font-bold text-text-primary block mt-0.5">
                   {mcData.median_cagr_pct}%
                 </span>
               </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/10">
+              <div className="p-2.5 rounded-xl bg-surface border border-border">
                 <span className="text-[10px] font-semibold text-text-secondary block">Downside (P10)</span>
                 <span className="text-lg font-mono font-bold text-amber-400 block mt-0.5">
                   {mcData.percentiles.p10}%
                 </span>
               </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/10">
+              <div className="p-2.5 rounded-xl bg-surface border border-border">
                 <span className="text-[10px] font-semibold text-text-secondary block">Bull Market (P90)</span>
                 <span className="text-lg font-mono font-bold text-brand-mint block mt-0.5">
                   {mcData.percentiles.p90}%

@@ -169,7 +169,7 @@ export const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose }) =
     <ModalPortal isOpen={isOpen} onClose={onClose} ariaLabel="Add Financial Goal">
       <div className="w-full max-w-[700px] dash-card-dark rounded-2xl overflow-hidden text-left animate-modal-enter">
         {/* Header */}
-        <div className="flex items-start justify-between px-6 py-5 border-b border-white/6 bg-[#0F1914]">
+        <div className="flex items-start justify-between px-6 py-5 border-b border-border bg-surface-dark">
           <div>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-brand-green animate-pulse" />
@@ -184,7 +184,7 @@ export const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose }) =
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-white/5 transition-colors"
+            className="p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-surface transition-colors"
             aria-label="Close dialog"
           >
             <X className="w-5 h-5" />
@@ -217,13 +217,13 @@ export const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose }) =
                     className={`relative p-3 rounded-xl border text-left transition-all duration-200 flex flex-col justify-between gap-2.5 ${
                       isSelected
                         ? 'bg-brand-green/10 border-brand-green text-text-primary shadow-glow-green ring-1 ring-brand-green/30'
-                        : 'bg-white/[0.02] border-white/8 text-text-secondary hover:text-text-primary hover:border-white/15 hover:bg-white/[0.04]'
+                        : 'bg-surface border-border text-text-secondary hover:text-text-primary hover:border-brand-green/30 hover:bg-surface-hover'
                     }`}
                   >
                     <div className="flex items-center justify-between w-full">
                       <div
                         className={`p-2 rounded-lg transition-colors ${
-                          isSelected ? 'bg-brand-green text-white' : 'bg-white/5 text-text-secondary'
+                          isSelected ? 'bg-brand-green text-white' : 'bg-surface text-text-secondary'
                         }`}
                       >
                         <IconComponent className="w-4 h-4" />
@@ -310,7 +310,7 @@ export const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose }) =
                     className="w-full h-11 pl-9 pr-8 rounded-xl bg-surface-dark border border-white/10 text-sm font-mono font-bold text-text-primary focus:border-brand-green focus:ring-1 focus:ring-brand-green/50 focus:outline-none transition-all cursor-pointer appearance-none"
                   >
                     {Array.from({ length: 30 }, (_, i) => currentYear + 1 + i).map((yr) => (
-                      <option key={yr} value={yr} className="bg-[#0C1410] text-text-primary">
+                      <option key={yr} value={yr} className="bg-surface-card text-text-primary">
                         {yr} ({yr - currentYear} {yr - currentYear === 1 ? 'year' : 'years'})
                       </option>
                     ))}
@@ -323,7 +323,7 @@ export const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose }) =
             </div>
 
             {/* Live Inflation preview banner */}
-            <div className="p-3 rounded-xl bg-white/[0.02] border border-white/6 flex items-center justify-between text-xs mt-2">
+            <div className="p-3 rounded-xl bg-surface border border-border flex items-center justify-between text-xs mt-2">
               <span className="text-text-secondary">Future Value in {targetYear} ({horizonYears} yrs):</span>
               <span className="font-mono font-bold text-brand-lightGreen text-sm">
                 {formatINR(projectedFV)}
@@ -353,7 +353,7 @@ export const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose }) =
                     className={`py-2 px-1 rounded-xl border text-center transition-all duration-200 ${
                       isSelected
                         ? 'bg-brand-green border-brand-green text-white shadow-glow-green'
-                        : 'bg-white/[0.02] border-white/8 text-text-secondary hover:text-text-primary hover:border-white/15'
+                        : 'bg-surface border-border text-text-secondary hover:text-text-primary hover:border-brand-green/30'
                     }`}
                   >
                     <span className="text-xs font-mono font-bold block">{p.label}</span>
@@ -375,7 +375,7 @@ export const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose }) =
             <button
               type="button"
               onClick={onClose}
-              className="h-11 px-5 rounded-xl border border-white/10 text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors"
+              className="h-11 px-5 rounded-xl border border-border text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface transition-colors"
             >
               Cancel
             </button>

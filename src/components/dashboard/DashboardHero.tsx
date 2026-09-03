@@ -41,7 +41,7 @@ export const DashboardHero: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowWarning(false)}
-            className="p-1 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-white/5 transition-colors"
+            className="p-1 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-surface transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -150,7 +150,7 @@ export const DashboardHero: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowFullRiskModal(true)}
-              className="p-1 text-text-tertiary hover:text-brand-lightGreen rounded-lg hover:bg-white/5 transition-colors"
+              className="p-1 text-text-tertiary hover:text-brand-lightGreen rounded-lg hover:bg-surface transition-colors"
               title="Expand full risk architecture"
             >
               <Maximize2 className="w-3.5 h-3.5" />
@@ -192,7 +192,7 @@ export const DashboardHero: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowFullRiskModal(false)}
-              className="absolute top-4 right-4 p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-white/5 transition-colors"
+              className="absolute top-4 right-4 p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-surface transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -219,7 +219,7 @@ export const DashboardHero: React.FC = () => {
             </p>
 
             {/* Target Allocations Grid */}
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/8 grid grid-cols-3 gap-2 text-center text-xs">
+            <div className="p-4 rounded-xl bg-surface border border-border grid grid-cols-3 gap-2 text-center text-xs">
               <div>
                 <span className="text-text-tertiary block text-[10px] uppercase font-bold">Recommended Equity</span>
                 <strong className="text-brand-lightGreen font-mono text-sm">

@@ -145,7 +145,7 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#080E0C]/90 backdrop-blur-xl border-b border-brand-green/10 transition-all">
+    <header className="sticky top-0 z-40 w-full bg-background/90 backdrop-blur-xl border-b border-brand-green/10 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         {/* Theme Toggle + Brand Logo */}
         <div className="flex items-center gap-3">
@@ -180,7 +180,7 @@ export const Header: React.FC = () => {
               className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 activeTab === 'dashboard'
                   ? 'bg-gradient-green text-white shadow-glow-green font-bold'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface'
               }`}
             >
               <DashboardNavColoredIcon className="w-3.5 h-3.5" /> Dashboard
@@ -191,7 +191,7 @@ export const Header: React.FC = () => {
               className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 activeTab === 'plans'
                   ? 'bg-gradient-green text-white shadow-glow-green font-bold'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface'
               }`}
             >
               <PlansNavColoredIcon className="w-3.5 h-3.5" /> Strategy & Plans
@@ -202,7 +202,7 @@ export const Header: React.FC = () => {
               className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 activeTab === 'assistant'
                   ? 'bg-gradient-green text-white shadow-glow-green font-bold'
-                  : 'text-brand-lightGreen hover:bg-white/5'
+                  : 'text-brand-lightGreen hover:bg-surface'
               }`}
             >
               <RobotAdvisorColoredIcon className="w-3.5 h-3.5" /> AI Advisor
@@ -217,7 +217,7 @@ export const Header: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsGlossaryOpen(true)}
-              className="p-2 rounded-xl bg-surface-dark hover:bg-white/5 border border-white/8 hover:border-brand-green/40 text-text-secondary hover:text-brand-lightGreen transition-all hidden sm:flex items-center gap-1.5"
+              className="p-2 rounded-xl bg-surface-dark hover:bg-surface border border-border hover:border-brand-green/40 text-text-secondary hover:text-brand-lightGreen transition-all hidden sm:flex items-center gap-1.5"
               aria-label="Open finance glossary"
               title="Finance Glossary"
             >
@@ -231,7 +231,7 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                className="p-2 rounded-xl bg-surface-dark hover:bg-white/5 border border-white/8 hover:border-white/15 text-text-secondary hover:text-text-primary transition-all relative"
+                className="p-2 rounded-xl bg-surface-dark hover:bg-surface border border-border hover:border-brand-green/30 text-text-secondary hover:text-text-primary transition-all relative"
                 aria-label="View notifications"
               >
                 <Bell className="w-4 h-4" />
@@ -251,7 +251,7 @@ export const Header: React.FC = () => {
                   </div>
 
                   <div className="space-y-2.5 text-xs">
-                    <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                    <div className="p-2.5 rounded-xl bg-surface border border-border space-y-1">
                       <span className="font-semibold text-text-primary flex items-center gap-1.5 text-[11px]">
                         <span className="w-1.5 h-1.5 rounded-full bg-brand-green" /> Allocation Rebalance
                       </span>
@@ -260,7 +260,7 @@ export const Header: React.FC = () => {
                       </p>
                     </div>
 
-                    <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                    <div className="p-2.5 rounded-xl bg-surface border border-border space-y-1">
                       <span className="font-semibold text-text-primary flex items-center gap-1.5 text-[11px]">
                         <span className="w-1.5 h-1.5 rounded-full bg-brand-mint" /> Emergency Cushion
                       </span>
@@ -269,7 +269,7 @@ export const Header: React.FC = () => {
                       </p>
                     </div>
 
-                    <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                    <div className="p-2.5 rounded-xl bg-surface border border-border space-y-1">
                       <span className="font-semibold text-text-primary flex items-center gap-1.5 text-[11px]">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Inflation Rate (6.0%)
                       </span>
@@ -287,7 +287,7 @@ export const Header: React.FC = () => {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-dark hover:bg-white/5 border border-white/8 hover:border-brand-green/50 transition-all text-left"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-dark hover:bg-surface border border-border hover:border-brand-green/50 transition-all text-left"
               title="Profile & Plan Settings"
             >
               <span className="text-base leading-none select-none">{user.avatar || '🧑‍💼'}</span>

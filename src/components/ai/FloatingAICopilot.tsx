@@ -124,7 +124,7 @@ export const FloatingAICopilot: React.FC = () => {
         /* Expanded Floating Chat Panel / Responsive Sheet on Mobile */
         <div className="pointer-events-auto fixed inset-x-3 bottom-3 sm:inset-auto sm:bottom-6 sm:right-6 w-auto sm:w-[420px] h-[520px] max-h-[85vh] dash-card-dark rounded-2xl flex flex-col overflow-hidden animate-modal-enter">
           {/* Header */}
-          <div className="p-4 bg-[#0F1914] border-b border-white/6 flex items-center justify-between">
+          <div className="p-4 bg-surface-dark border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="p-2 rounded-xl bg-brand-green/15 text-brand-lightGreen border border-brand-green/20">
                 <Bot className="w-4 h-4" />
@@ -146,7 +146,7 @@ export const FloatingAICopilot: React.FC = () => {
                   setIsOpen(false);
                   setActiveTab('assistant');
                 }}
-                className="p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-white/5 transition-colors"
+                className="p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-surface transition-colors"
                 title="Expand to Full Page AI Assistant"
               >
                 <Maximize2 className="w-3.5 h-3.5" />
@@ -154,7 +154,7 @@ export const FloatingAICopilot: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-white/5 transition-colors"
+                className="p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-surface transition-colors"
                 title="Minimize Copilot"
               >
                 <Minimize2 className="w-3.5 h-3.5" />
@@ -162,7 +162,7 @@ export const FloatingAICopilot: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-white/5 transition-colors"
+                className="p-1.5 text-text-tertiary hover:text-text-primary rounded-lg hover:bg-surface transition-colors"
                 title="Close Copilot"
               >
                 <X className="w-4 h-4" />
@@ -193,7 +193,7 @@ export const FloatingAICopilot: React.FC = () => {
                   className={`p-1.5 rounded-lg shrink-0 ${
                     msg.sender === 'user'
                       ? 'bg-brand-green text-white'
-                      : 'bg-white/5 text-text-secondary border border-white/8'
+                      : 'bg-surface text-text-secondary border border-border'
                   }`}
                 >
                   {msg.sender === 'user' ? (
@@ -207,7 +207,7 @@ export const FloatingAICopilot: React.FC = () => {
                   className={`max-w-[85%] rounded-2xl p-3.5 leading-relaxed ${
                     msg.sender === 'user'
                       ? 'bg-brand-green text-white rounded-tr-none shadow-glow-green'
-                      : 'bg-[#101915] border border-white/8 text-text-primary rounded-tl-none'
+                      : 'bg-surface-dark border border-border text-text-primary rounded-tl-none'
                   }`}
                 >
                   <p className="whitespace-pre-line text-xs leading-relaxed">
@@ -218,7 +218,7 @@ export const FloatingAICopilot: React.FC = () => {
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2 text-xs text-text-secondary p-2 bg-white/5 rounded-xl animate-pulse max-w-fit">
+              <div className="flex items-center gap-2 text-xs text-text-secondary p-2 bg-surface rounded-xl animate-pulse max-w-fit">
                 <Sparkles className="w-3.5 h-3.5 text-brand-lightGreen animate-spin" />
                 Analyzing portfolio parameters...
               </div>
@@ -232,7 +232,7 @@ export const FloatingAICopilot: React.FC = () => {
               e.preventDefault();
               handleSend(input);
             }}
-            className="p-3 bg-[#0F1914] border-t border-white/6 flex items-center gap-2"
+            className="p-3 bg-surface-dark border-t border-border flex items-center gap-2"
           >
             <input
               type="text"

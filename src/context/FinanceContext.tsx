@@ -69,6 +69,7 @@ interface FinanceContextType {
   updateGoalPlan: (goalId: string, planType: PlanType) => void;
   updateProfileBasic: (name: string, age: number, monthlySalary: number) => void;
   changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
+  resetPassword: (email: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
   updateInlineFinancials: (updates: {
     monthlyIncome?: number;
     monthlyExpenses?: number;
@@ -554,6 +555,71 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
     return { success: true };
   };
 
+  const resetPassword = async (
+    email: string,
+    newPassword: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    if (newPassword.length < 6) {
+      return { success: false, error: 'New password must be at least 6 characters.' };
+    }
+    const normalizedEmail = email.trim().toLowerCase();
+    const newHash = await hashPassword(newPassword);
+
+    // Fast path: account already cached locally on this browser.
+    if (usersDb[normalizedEmail]) {
+      setUsersDb(prev => ({
+        ...prev,
+        [normalizedEmail]: {
+          ...prev[normalizedEmail],
+          passwordHash: newHash,
+        },
+      }));
+      return { success: true };
+    }
+
+    // Not cached locally - check the real database (same approach as
+    // login's cross-device fallback), so resetting from a new browser
+    // also restores the account's real data instead of starting blank.
+    const dbCustomer = await databaseService.getCustomerByEmail(normalizedEmail);
+    if (!dbCustomer) {
+      return { success: false, error: 'No account found with that email address.' };
+    }
+
+    const fullProfile = await databaseService.getFullProfile(dbCustomer.customer_id);
+    const hydratedProfile: UserProfile = {
+      id: dbCustomer.customer_id,
+      name: dbCustomer.name,
+      age: dbCustomer.age,
+      email: normalizedEmail,
+      avatar: '🧑‍💼',
+      hasCompletedOnboarding: !!(fullProfile?.riskProfile || (fullProfile?.goals && fullProfile.goals.length > 0)),
+      income: (fullProfile?.income as any) || [],
+      expenses: (fullProfile?.expenses as any) || [],
+      assets: (fullProfile?.assets as any) || [],
+      liabilities: (fullProfile?.liabilities as any) || [],
+      riskProfile: fullProfile?.riskProfile
+        ? {
+            answers: fullProfile.riskProfile.answers,
+            score: fullProfile.riskProfile.score,
+            category: fullProfile.riskProfile.category as RiskCategory,
+            categoryDescription: 'Balanced growth with controlled volatility exposure.',
+          }
+        : { answers: [3, 3, 3], score: 15, category: 'Balanced', categoryDescription: 'Balanced growth with controlled volatility exposure.' },
+      goals: (fullProfile?.goals as any) || [],
+    };
+
+    setUsersDb(prev => ({
+      ...prev,
+      [normalizedEmail]: {
+        email: normalizedEmail,
+        passwordHash: newHash,
+        profile: hydratedProfile,
+      },
+    }));
+
+    return { success: true };
+  };
+
   return (
     <FinanceContext.Provider
       value={{
@@ -591,6 +657,7 @@ export const FinanceProvider: React.FC<{ children: ReactNode }> = ({ children })
         updateGoalPlan,
         updateProfileBasic,
         changePassword,
+        resetPassword,
       }}
     >
       {children}
